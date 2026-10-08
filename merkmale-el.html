@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entwicklung messen – Merkmale von Ländern mit niedrigem Entwicklungsstand</title>
+<style>
+:root{
+  --paper:#faf6ee;--card:#ffffff;--ink:#23201c;--muted:#6a6358;--line:#dccfb4;--sand:#f1e8d6;
+  --teal:#0f5f66;--teal2:#1d8a8f;--ochre:#c58a1b;--terra:#b4492f;
+  --gesund:#b4492f;--bildung:#2f5d9e;--wirtschaft:#2f7d4f;--synth:#6b3f8c;--basis:#0f5f66;
+  --ok:#1f7a3d;--bad:#b3261e;--focus:#ff9f1c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.2;margin:0}
+a{color:var(--teal)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:.5rem 1rem;z-index:100}
+.skip:focus{left:8px;top:8px}
+main{max-width:920px;margin:0 auto;padding:0 16px 120px}
+
+/* Kopf */
+.kopf{background:linear-gradient(135deg,#0f5f66 0%,#164a57 55%,#2b3f5c 100%);color:#fff;border-radius:0 0 28px 28px;padding:28px 22px 24px;position:relative;overflow:hidden}
+.kopf svg.globe{position:absolute;right:-30px;top:-30px;width:230px;height:230px;opacity:.22}
+.kopf .eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;opacity:.85}
+.kopf h1{font-size:clamp(1.55rem,4.5vw,2.3rem);margin:.3rem 0 .4rem;max-width:34ch}
+.kopf p.sub{margin:0 0 1rem;opacity:.92;max-width:60ch}
+.idgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:10px}
+.idgrid label{display:block;font-size:.78rem;opacity:.95}
+.idgrid input{width:100%;padding:.5rem .6rem;border-radius:8px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.96);color:var(--ink);font-size:1rem}
+.idgrid small{display:block;opacity:.85;font-size:.72rem;margin-top:2px}
+.banner{background:#fff3cd;border:1px solid #e0b43c;color:#5c4400;padding:.7rem 1rem;border-radius:10px;margin:14px 0;display:none}
+.banner.show{display:block}
+
+/* Navigation */
+.nav{position:sticky;top:0;z-index:20;background:rgba(250,246,238,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:8px 10px;margin:0 -16px 10px;overflow-x:auto;white-space:nowrap}
+.nav a{display:inline-block;text-decoration:none;padding:.3rem .7rem;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:.85rem;margin-right:4px}
+.nav a:hover{background:var(--sand)}
+
+/* Karten */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.hook{background:var(--sand);border-left:6px solid var(--terra)}
+.hook .big{font-family:Georgia,serif;font-size:1.25rem}
+.leit{border-left:6px solid var(--teal)}
+.leit h2{font-size:1.15rem;color:var(--teal)}
+.ziele ul{margin:.4rem 0 0 1.1rem;padding:0}
+.plan{width:100%;border-collapse:collapse;font-size:.92rem}
+.plan th,.plan td{padding:.35rem .5rem;border-bottom:1px solid var(--line);text-align:left}
+
+/* Stationen */
+.station{margin:30px 0;border-top:6px solid var(--c);padding-top:10px}
+.sthead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.stnum{background:var(--c);color:#fff;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;font-weight:700;font-family:Georgia,serif}
+.sthead h2{font-size:1.35rem;flex:1;min-width:200px;color:var(--c)}
+.stmin{font-size:.85rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.1rem .6rem;background:#fff}
+.box{background:#fff;border:1px dashed var(--c);border-radius:14px;padding:12px 16px;margin:8px 0 14px}
+.box h3{font-size:1rem;color:var(--c);margin-bottom:.3rem}
+.box ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
+.box li{margin:.15rem 0}
+.src{font-size:.78rem;color:var(--muted)}
+
+/* Aufgaben */
+.task{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:14px;padding:14px 16px;margin:14px 0}
+.thead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.tnum{font-weight:700;font-family:Georgia,serif;font-size:1.1rem;color:var(--c)}
+.op{position:relative;cursor:help;padding:.1rem .6rem;border-radius:999px;font-weight:600;font-size:.85rem;border:1px solid transparent}
+.op.a1{background:#e3f1f2;color:#0b4a50;border-color:#b5d6d9}
+.op.a2{background:#fbeccd;color:#6b4700;border-color:#e8cd8f}
+.op.a3{background:#f4d9d2;color:#7a2512;border-color:#e3ab9d}
+.optip{display:none;position:absolute;left:0;top:125%;z-index:15;width:min(290px,80vw);background:#23201c;color:#fff;font-weight:400;font-size:.82rem;line-height:1.4;padding:.5rem .65rem;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.op:hover .optip,.op:focus .optip,.op:focus-within .optip{display:block}
+.afb{font-size:.78rem;color:var(--muted)}
+.lvl{font-size:.75rem;padding:.05rem .5rem;border-radius:6px;border:1px solid var(--line);background:#fff}
+.lvl.basis{color:#0b4a50;border-color:#9ccacd}
+.lvl.erw{color:#6b2a8c;border-color:#caa2dc;background:#f8f0fc}
+.ttext{margin:.2rem 0 .6rem}
+textarea,input[type=text],select,input[type=date]{font:inherit;color:inherit}
+textarea{width:100%;min-height:96px;padding:.6rem .7rem;border:1px solid #bfb396;border-radius:10px;background:#fffefb;resize:vertical}
+.fld{margin:.5rem 0}
+.fld>label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:2px}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:.35rem 0}
+.numrow label{min-width:0;flex:1 1 260px}
+.numrow input{width:120px;padding:.4rem .5rem;border:1px solid #bfb396;border-radius:8px;background:#fffefb;font-size:1rem}
+.numrow .unit{color:var(--muted);font-size:.9rem}
+select{padding:.35rem .4rem;border:1px solid #bfb396;border-radius:8px;background:#fffefb;max-width:100%}
+table.mt{width:100%;border-collapse:collapse;margin:.4rem 0}
+table.mt th,table.mt td{border-bottom:1px solid var(--line);padding:.4rem .4rem;text-align:left;vertical-align:top}
+table.mt th{font-size:.82rem;color:var(--muted);font-weight:600}
+.opts{display:grid;gap:6px;margin:.4rem 0}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:.45rem .6rem;border:1px solid var(--line);border-radius:10px;background:#fffefb;cursor:pointer}
+.opt:hover{background:var(--sand)}
+.opt input{margin-top:.28rem}
+.btn{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--teal);background:var(--teal);color:#fff;padding:.45rem .9rem}
+.btn:hover{background:#0b4a50}
+.btn.ghost{background:#fff;color:var(--teal)}
+.btn.ghost:hover{background:var(--sand)}
+.btn.danger{border-color:var(--bad);color:var(--bad);background:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.fb{margin-top:.5rem;font-size:.92rem}
+.fb ul{list-style:none;margin:.2rem 0;padding:0}
+.fb li{padding:.2rem 0}
+.fb .ok{color:var(--ok);font-weight:600}
+.fb .no{color:var(--bad);font-weight:600}
+.fb .hint{color:var(--muted)}
+.help{margin-top:.6rem;border:1px solid var(--line);border-radius:10px;background:#fcfaf4}
+.help>summary{cursor:pointer;padding:.45rem .7rem;font-weight:600;font-size:.9rem;list-style:none}
+.help>summary::-webkit-details-marker{display:none}
+.help>summary::before{content:"▸ ";color:var(--c)}
+.help[open]>summary::before{content:"▾ "}
+.help.tip>summary{color:#7a5300}
+.help.info>summary{color:var(--teal)}
+.hbody{padding:.2rem .9rem .7rem;font-size:.93rem}
+.hbody ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
+.hbody p{margin:.35rem 0}
+
+/* Tabelle der Daten */
+.tscroll{overflow-x:auto}
+table.data{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem;background:#fff}
+table.data th,table.data td{border:1px solid var(--line);padding:.4rem .55rem;text-align:right}
+table.data th:first-child,table.data td:first-child{text-align:left}
+table.data thead th{background:var(--sand)}
+table.data tr.area td{text-align:left;font-weight:700;color:#fff}
+.g-sehr{background:#0f5f66;color:#fff;border-radius:6px;padding:0 .4rem}
+.g-hoch{background:#2c8f93;color:#fff;border-radius:6px;padding:0 .4rem}
+.g-mittel{background:#e0a93a;color:#2b1f00;border-radius:6px;padding:0 .4rem}
+.g-niedrig{background:#b4492f;color:#fff;border-radius:6px;padding:0 .4rem}
+
+/* Modell */
+.model{background:#fff;border:2px solid var(--wirtschaft);border-radius:16px;padding:14px;margin:12px 0}
+.model h3{color:var(--wirtschaft);font-size:1.05rem}
+.mctl{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin:.5rem 0}
+.mctl label{font-size:.85rem;color:var(--muted);display:block}
+.mctl select{display:block;margin-top:2px}
+svg.chart{width:100%;height:auto;background:#fffefb;border:1px solid var(--line);border-radius:10px}
+svg.chart .ax{stroke:#8d8470;stroke-width:1}
+svg.chart .gr{stroke:#e8dfc8;stroke-width:1}
+svg.chart text{font-size:11px;fill:#4a443a}
+svg.chart .pt{cursor:pointer}
+svg.chart .pt circle{stroke:#fff;stroke-width:2}
+svg.chart .pt:focus circle,svg.chart .pt:hover circle{stroke:#23201c}
+svg.chart .pt text{font-weight:600;font-size:12px}
+.mread{min-height:1.5em;font-size:.92rem;margin:.4rem 0 0}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.8rem;margin-top:.4rem}
+.legend span{display:inline-flex;gap:5px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%}
+
+/* Quiz */
+.q{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;background:#fff}
+.q legend{font-weight:600;padding:0 .3rem}
+.q .opt.right{border-color:var(--ok);background:#eaf6ee}
+.q .opt.wrong{border-color:var(--bad);background:#fbeceb}
+.qfb{font-size:.9rem;margin-top:.4rem}
+.likert{display:flex;gap:8px;flex-wrap:wrap}
+.likert label{display:flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:.2rem .7rem;background:#fff;cursor:pointer}
+.srow{padding:.5rem 0;border-bottom:1px solid var(--line)}
+
+/* Abgabe */
+.abgabe{border:3px solid var(--teal);background:#f2fafa}
+.abgabe h2{color:var(--teal);margin-bottom:.4rem}
+.abgabe dl{display:grid;grid-template-columns:auto 1fr;gap:.2rem 1rem;margin:.5rem 0}
+.abgabe dt{color:var(--muted)}
+.abgabe dd{margin:0;font-weight:600}
+.abgabe ul{margin:.3rem 0 .3rem 1.1rem;padding:0;font-size:.92rem}
+.abgabe .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:.6rem}
+.msg{font-size:.9rem;margin-top:.5rem}
+.teacher{margin:24px 0;border:1px dashed #9a8f77;border-radius:12px;background:#fff}
+.teacher>summary{cursor:pointer;padding:.6rem .9rem;font-weight:600}
+.teacher .hbody{font-size:.9rem}
+.teacher table{border-collapse:collapse;width:100%}
+.teacher td,.teacher th{border:1px solid var(--line);padding:.25rem .5rem;text-align:left}
+
+.printbtn{position:fixed;right:14px;bottom:14px;z-index:30;background:#fff;color:var(--muted);border:1px solid #b9ae95;border-radius:999px;padding:.4rem .9rem;font-size:.82rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.printbtn:hover{color:var(--ink);background:var(--sand)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;place-items:center;z-index:60}
+.overlay.show{display:grid}
+.dlg{background:#fff;border-radius:14px;padding:20px;max-width:420px;width:90%}
+.dlg .row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+
+@media (max-width:560px){
+  .abgabe dl{grid-template-columns:1fr}
+  .kopf{padding:22px 16px}
+}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .nav,.help,.btn,.abgabe,.banner,.printbtn,.teacher,.overlay,.skip,.mctl,.chk,.kopf svg.globe,.noprint{display:none!important}
+  main{padding:0;max-width:none}
+  .kopf{background:#fff!important;color:#000;border:1px solid #999;border-radius:0;padding:10px}
+  .kopf h1{font-size:16pt}
+  .idgrid input{border:1px solid #999;background:#fff}
+  .card,.task,.box,.q,.model{break-inside:avoid;box-shadow:none}
+  .station{break-before:auto}
+  textarea{height:auto;min-height:60px;overflow:visible;border:1px solid #888;resize:none}
+  .fb{display:none}
+  .q .qfb{display:none}
+  .optip{display:none!important}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="kopf" id="kopf" data-station="kopf">
+  <svg class="globe" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><g fill="none" stroke="#fff" stroke-width="2"><circle cx="100" cy="100" r="90"/><ellipse cx="100" cy="100" rx="38" ry="90"/><ellipse cx="100" cy="100" rx="70" ry="90"/><line x1="10" y1="100" x2="190" y2="100"/><path d="M18 62 Q100 78 182 62"/><path d="M18 138 Q100 122 182 138"/></g></svg>
+  <div class="eyebrow">Geographie · Jahrgangsstufe 10 · Leben in der Einen Welt</div>
+  <h1>Entwicklung messen – Woran erkennt man ein Land mit niedrigem Entwicklungsstand?</h1>
+  <p class="sub">Gesundheit, Bildung, Wirtschaft: Welche Kennzahlen gibt es und wie gut taugen sie wirklich? Arbeitszeit: ca. 60 Minuten.</p>
+  <div class="idgrid">
+    <div><label for="h_name">Name (nur für den Ausdruck)</label><input id="h_name" type="text" data-key="h_name" autocomplete="off"><small>wird nicht in die Abgabedatei geschrieben</small></div>
+    <div><label for="h_kuerzel">Kürzel für die Abgabe</label><input id="h_kuerzel" type="text" data-key="h_kuerzel" autocomplete="off" maxlength="24" placeholder="z. B. Fuchs42"><small>kein Klarname, Zuordnung kennt nur deine Lehrkraft</small></div>
+    <div><label for="h_kurs">Kurs / Klasse</label><input id="h_kurs" type="text" data-key="h_kurs" autocomplete="off"></div>
+    <div><label for="h_datum">Datum</label><input id="h_datum" type="date" data-key="h_datum"></div>
+  </div>
+</header>
+
+<main id="inhalt">
+  <div class="banner" id="banner" role="alert"><b>Achtung:</b> Dein Browser erlaubt hier kein automatisches Speichern (z. B. in der Teams-/SharePoint-Vorschau). Lade die Datei herunter und öffne sie direkt im Browser (Chrome, Edge, Firefox). Sonst gehen deine Eingaben beim Schließen verloren.</div>
+
+  <nav class="nav" aria-label="Stationen">
+    <a href="#intro">Start</a><a href="#s1">1 Begriffe</a><a href="#s2">2 Daten</a><a href="#s3">3 Gesundheit</a><a href="#s4">4 Bildung</a><a href="#s5">5 Wirtschaft</a><a href="#s6">6 Urteil</a><a href="#abschluss">Abschluss</a>
+  </nav>
+
+  <section id="intro" data-station="intro">
+    <div class="card hook">
+      <p class="big">Stell dir zwei Klassenzimmer vor, jeweils mit 1000 neugeborenen Kindern.</p>
+      <p>Im ersten werden die Kinder in Deutschland geboren, im zweiten in Niger. Bis zum fünften Geburtstag sterben in Deutschland statistisch etwa <b>4</b> dieser Kinder, in Niger etwa <b>117</b> – mehr als jedes zehnte. Eine einzige Zahl erzählt hier schon viel über Lebensbedingungen. Aber reicht eine Zahl, um ein ganzes Land zu beurteilen?</p>
+    </div>
+    <div class="card leit">
+      <h2>Leitfrage</h2>
+      <p style="font-size:1.1rem;margin:.3rem 0 0"><b>Mit welchen Indikatoren aus Gesundheit, Bildung und Wirtschaft kann man den Entwicklungsstand eines Landes einschätzen – und wie aussagekräftig sind sie?</b></p>
+    </div>
+    <div class="card ziele">
+      <h2 style="font-size:1.1rem">Das kannst du am Ende</h2>
+      <ul>
+        <li>typische Merkmale von Ländern mit niedrigem Entwicklungsstand in den Bereichen Gesundheit, Bildung und Wirtschaft nennen und beschreiben,</li>
+        <li>Indikatoren aus Tabellen ablesen, vergleichen und mit ihnen rechnen,</li>
+        <li>die Eignung von Indikatoren begründet beurteilen und kritisch Stellung nehmen.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2 style="font-size:1.05rem;margin-bottom:.4rem">Ablauf (ca. 60 Minuten)</h2>
+      <table class="plan">
+        <tr><th>Station</th><th>Thema</th><th>Zeit</th></tr>
+        <tr><td>1</td><td>Begriffe klären</td><td>5 Min.</td></tr>
+        <tr><td>2</td><td>Daten lesen und vergleichen</td><td>7 Min.</td></tr>
+        <tr><td>3</td><td>Gesundheit messen</td><td>11 Min.</td></tr>
+        <tr><td>4</td><td>Bildung messen</td><td>8 Min.</td></tr>
+        <tr><td>5</td><td>Wirtschaft messen (mit Modell)</td><td>11 Min.</td></tr>
+        <tr><td>6</td><td>Gesamturteil: Wie gut sind Indikatoren?</td><td>13 Min.</td></tr>
+        <tr><td>–</td><td>Selbstcheck, Einschätzung, Exit-Ticket, Abgabe</td><td>5 Min.</td></tr>
+      </table>
+      <p class="src" style="margin:.5rem 0 0">Hilfen: Zu jeder Aufgabe gibt es aufklappbares <b>Infomaterial</b>, bei schwierigeren Aufgaben zusätzlich gestufte <b>Tipps</b>. Aufgaben mit „Erweiterung“ sind für schnelle Bearbeitung gedacht. Fahre mit der Maus (oder Tab-Taste) über das farbige Wort jeder Aufgabe, um den Operator erklärt zu bekommen.</p>
+    </div>
+  </section>
+
+  <div id="stations"></div>
+
+  <section id="abschluss" data-station="abschluss">
+    <div class="station" style="--c:var(--teal)">
+      <header class="sthead"><span class="stnum">✓</span><h2>Abschluss</h2><span class="stmin">ca. 5 Min.</span></header>
+
+      <div class="card">
+        <h3 style="font-size:1.1rem">Selbstcheck-Quiz</h3>
+        <p class="src">Entscheide dich zuerst, die Erklärung erscheint danach. Achtung: Mehrere Antworten klingen plausibel.</p>
+        <div id="quiz"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.1rem">Selbsteinschätzung</h3>
+        <div id="selfbox"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.1rem">Exit-Ticket</h3>
+        <div class="fld"><label for="x1">Das nehme ich heute mit (ein Satz):</label><textarea id="x1" data-key="f_exit_1" style="min-height:70px"></textarea></div>
+        <div class="fld"><label for="x2">Das ist mir noch unklar / diese Frage habe ich:</label><textarea id="x2" data-key="f_exit_2" style="min-height:70px"></textarea></div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.1rem">Ausblick auf die nächste Stunde</h3>
+        <p>Heute hast du gemessen, <i>wie</i> man Entwicklungsstand beschreibt. Als Nächstes fragen wir: <b>Warum</b> entstehen Unterschiede zwischen Ländern – und was kann <b>Entwicklungszusammenarbeit</b> bewirken, was nicht? Überlege dir schon einmal, welche Ursachen für schlechte Werte in Gesundheit, Bildung und Wirtschaft du vermutest.</p>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:1.1rem">Notizen (bleiben nur bei dir)</h3>
+        <textarea id="notes" data-key="notes" aria-label="Notizen" style="min-height:90px"></textarea>
+      </div>
+
+      <div class="card abgabe" id="abgabe">
+        <h2>Abgabe</h2>
+        <p>Deine Datei wird <b>pseudonymisiert</b> abgegeben: Sie enthält nur dein Kürzel, nicht deinen Namen.</p>
+        <dl>
+          <dt>Ausgefüllte Felder</dt><dd id="a_felder">–</dd>
+          <dt>Selbstcheck beantwortet</dt><dd id="a_quiz">–</dd>
+          <dt>Hilfen geöffnet</dt><dd id="a_hilfen">–</dd>
+          <dt>Prüfversuche</dt><dd id="a_pruef">–</dd>
+          <dt>Aktive Bearbeitungszeit</dt><dd id="a_zeit">–</dd>
+        </dl>
+        <details class="help info" style="--c:var(--teal)"><summary>Was steht in der Abgabedatei? (Transparenz)</summary>
+          <div class="hbody">
+            <ul>
+              <li>dein <b>Kürzel</b>, Kurs und Datum</li>
+              <li>alle deine <b>Antworten</b> zu den Aufgaben, Quiz, Selbsteinschätzung und Exit-Ticket</li>
+              <li>welche <b>Hilfen</b> (Infomaterial, Tipps) du wie oft und wann geöffnet hast</li>
+              <li>deine <b>Prüfversuche</b> mit Eingaben und Ergebnis</li>
+              <li>deine <b>erste Quizantwort</b> und spätere Wechsel</li>
+              <li>ob und wie oft du <b>Text eingefügt</b> hast (nur Anzahl und Zeichenmenge, nicht der Text selbst)</li>
+              <li>die <b>aktive Bearbeitungszeit</b> je Station (nur wenn das Fenster sichtbar war und du in den letzten 90 Sekunden etwas getan hast)</li>
+              <li>ob du das Modell benutzt hast</li>
+            </ul>
+            <p><b>Nicht enthalten:</b> dein Name und deine Notizen.</p>
+            <p>Die Daten dienen dazu, deinen Lernstand zu erkennen und dir gezielt Rückmeldung zu geben. Sie werden nicht benotet.</p>
+          </div>
+        </details>
+        <div class="row">
+          <button class="btn" id="dl" disabled>Abgabedatei herunterladen</button>
+          <button class="btn danger" id="reset" type="button">Alle Eingaben löschen</button>
+        </div>
+        <p class="msg" id="a_msg" role="status" aria-live="polite">Trage oben ein Kürzel ein, dann kannst du die Datei herunterladen. Lade die Datei danach in der Teams-Aufgabe hoch.</p>
+      </div>
+
+      <details class="teacher" id="lk">
+        <summary>Hinweise für die Lehrkraft</summary>
+        <div class="hbody">
+          <p><b>Lehrplanbezug (LehrplanPLUS Gymnasium Bayern, Geographie 10):</b> Lernbereich 2 „Leben in der Einen Welt“ (ca. 6 Std.). Kompetenzerwartungen: „charakterisieren anhand unterschiedlicher kartografischer Darstellungen und Statistiken Regionen unterschiedlichen Entwicklungsstandes“, „nehmen kritisch Stellung zu gängigen Indikatoren zur Bestimmung des Entwicklungsstandes“, „stellen Merkmale und Probleme von Ländern mit niedrigem Entwicklungsstand dar …“. Inhalte: Merkmale von Ländern mit niedrigem Entwicklungsstand; Indikatoren zur Klassifizierung von Ländern nach ihrem Entwicklungsstand. Quelle: <a href="https://www.lehrplanplus.bayern.de/fachlehrplan/gymnasium/10/geographie" target="_blank" rel="noopener">lehrplanplus.bayern.de/fachlehrplan/gymnasium/10/geographie</a></p>
+          <p><b>Didaktische Anlage:</b> Aufhänger mit Zahlenvergleich, Leitfrage, danach drei Bereichsstationen mit gleichem Muster (Merkmale kennenlernen → Zahlen ermitteln → Indikatoren auf Eignung prüfen). ICAP: aktiv (ablesen, zuordnen, rechnen), konstruktiv (beschreiben, erklären, begründen, Stellung nehmen), interaktiv (Modell erkunden; empfohlen: Aufgabe 6.3 im Unterricht kurz mit der Sitznachbarin/dem Sitznachbarn abgleichen lassen). Aufgaben mit „Erweiterung“ sind optional.</p>
+          <table>
+            <tr><th>Station</th><th>Zeit</th></tr>
+            <tr><td>1 Begriffe</td><td>5</td></tr><tr><td>2 Daten</td><td>7</td></tr><tr><td>3 Gesundheit</td><td>11</td></tr><tr><td>4 Bildung</td><td>8</td></tr><tr><td>5 Wirtschaft + Modell</td><td>11</td></tr><tr><td>6 Gesamturteil</td><td>13</td></tr><tr><td>Abschluss</td><td>5</td></tr>
+          </table>
+          <p><b>Daten:</b> Ländervergleich mit fünf Staaten (HDI-Gruppen sehr hoch bis niedrig). HDI 2023 laut UNDP Human Development Report 2025, Beschäftigte in der Landwirtschaft 2023 (ILO-Schätzung über Weltbank); übrige Werte (Lebenserwartung, Kindersterblichkeit, Alphabetisierung, Schulbesuchsdauer, BNE pro Kopf) sind auf runde Werte gerundete Richtgrößen aus UNDP, UN IGME, UNESCO und Weltbank. Die automatischen Prüfungen arbeiten mit den in der Tabelle gedruckten Werten.</p>
+          <p><b>Datenspeicherung:</b> Eingaben und Protokoll liegen nur im localStorage des jeweiligen Browsers. Der Export enthält Kürzel, nicht Name und Notizen. Prüfsumme: FNV-1a (32 Bit) über das JSON ohne Feld „pruefsumme“.</p>
+          <p><b>Operatoren:</b> Erklärungen sinngemäß nach der gängigen bayerischen Operatorenliste für Geographie; „ermitteln“ und „zuordnen“ sind Arbeitsbezeichnungen für Ablese-, Rechen- und Zuordnungsaufgaben.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<button class="printbtn" id="printbtn" type="button" aria-label="PDF oder Drucken, DIN A4">PDF/Drucken (A4)</button>
+
+<div class="overlay" id="ovl" role="dialog" aria-modal="true" aria-labelledby="ovlh">
+  <div class="dlg">
+    <h3 id="ovlh">Wirklich alles löschen?</h3>
+    <p>Alle deine Eingaben, Antworten und das Bearbeitungsprotokoll in dieser Datei werden unwiderruflich gelöscht.</p>
+    <div class="row"><button class="btn ghost" id="ovlno" type="button">Abbrechen</button><button class="btn danger" id="ovlyes" type="button">Ja, alles löschen</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============ Konfiguration ============ */
+var NS='gw10_entwicklung_merkmale_v1_';
+var DOC={titel:'Entwicklung messen – Merkmale von Ländern mit niedrigem Entwicklungsstand',thema:'Merkmale-Entwicklungslaender',klasse:'Jahrgangsstufe 10',id:'geo10-lb2-merkmale-indikatoren-v1'};
+
+var IND=[
+ {k:'hdi',n:'HDI (Index 0–1)',kurz:'HDI',d:3,bereich:'Gesamt'},
+ {k:'le',n:'Lebenserwartung bei Geburt (Jahre)',kurz:'Lebenserwartung',d:0,bereich:'Gesundheit'},
+ {k:'u5',n:'Kindersterblichkeit unter 5 Jahren (je 1000 Lebendgeburten)',kurz:'Kindersterblichkeit',d:0,bereich:'Gesundheit'},
+ {k:'lit',n:'Alphabetisierungsrate Erwachsene (%)',kurz:'Alphabetisierung',d:0,bereich:'Bildung'},
+ {k:'sch',n:'Mittlere Schulbesuchsdauer Erwachsene (Jahre)',kurz:'Schulbesuchsdauer',d:0,bereich:'Bildung'},
+ {k:'gni',n:'BNE pro Kopf (kaufkraftbereinigt, US-$)',kurz:'BNE pro Kopf',d:0,bereich:'Wirtschaft'},
+ {k:'agr',n:'Beschäftigte in der Landwirtschaft (% aller Beschäftigten)',kurz:'Landwirtschaft',d:1,bereich:'Wirtschaft'}
+];
+var LAND=[
+ {k:'de',n:'Deutschland',g:'sehr hoch',col:'#0f5f66'},
+ {k:'br',n:'Brasilien',g:'hoch',col:'#2c8f93'},
+ {k:'in',n:'Indien',g:'mittel',col:'#d49a1f'},
+ {k:'et',n:'Äthiopien',g:'niedrig',col:'#b4492f'},
+ {k:'ne',n:'Niger',g:'niedrig',col:'#b4492f'}
+];
+var D={
+ hdi:[0.959,0.786,0.685,0.497,0.419],
+ le:[81,76,72,67,62],
+ u5:[4,14,30,48,117],
+ lit:[99,93,77,52,38],
+ sch:[14,8,7,3,2],
+ gni:[66000,19000,9000,3000,2000],
+ agr:[1.2,8.2,43.5,62.4,70.6]
+};
+
+var OPS={
+ 'nennen':'Informationen oder Begriffe ohne Erklärung aufzählen.',
+ 'ermitteln':'Werte aus Tabellen oder Material herauslesen und, wenn nötig, damit rechnen.',
+ 'zuordnen':'Begriffe, Aussagen oder Werte begründet einer passenden Kategorie zuweisen.',
+ 'beschreiben':'Sachverhalte sachlich, in eigenen Worten und mit Fachbegriffen darstellen, möglichst mit Zahlen belegt.',
+ 'erklären':'Ursachen und Zusammenhänge verständlich darlegen (warum ist das so?).',
+ 'analysieren':'Material gezielt untersuchen, Teile und Zusammenhänge herausarbeiten und prüfen.',
+ 'beurteilen':'Mithilfe von Fachwissen und Kriterien zu einem Sachverhalt ein begründetes Urteil abgeben.',
+ 'Stellung nehmen':'Argumente für und gegen eine Aussage abwägen und eine begründete eigene Position formulieren.'
+};
+var AFBN={'I':1,'II':2,'III':3};
+
+var STATIONS=[
+ {id:'s1',n:1,c:'#0f5f66',min:5,title:'Begriffe klären: Was heißt „niedriger Entwicklungsstand“?',
+  box:'<h3>Das Wichtigste in Kürze</h3><ul><li>„Entwicklung“ hat mehrere Dimensionen: Gesundheit, Bildung, Einkommen, aber auch Sicherheit, Teilhabe und Umwelt.</li><li>Damit man sie vergleichen kann, braucht man <b>Indikatoren</b>: messbare Kennzahlen, die etwas schwer Greifbares sichtbar machen.</li><li>Im Lehrplan sprichst du von „Ländern mit niedrigem Entwicklungsstand“. Der Begriff „Entwicklungsland“ ist verbreitet, aber umstritten.</li></ul>'},
+ {id:'s2',n:2,c:'#6b4a1b',min:7,title:'Daten lesen: fünf Länder im Vergleich',
+  box:'<h3>Arbeitsgrundlage</h3><p>Die Tabelle zeigt sieben Indikatoren für fünf Länder. Der <b>HDI</b> (Index der menschlichen Entwicklung) fasst Gesundheit, Bildung und Einkommen in einer Zahl zusammen. Länder werden danach grob in vier Gruppen eingeteilt: sehr hoch (ab 0,800), hoch (0,700–0,799), mittel (0,550–0,699), niedrig (unter 0,550).</p>',extra:'DATA'},
+ {id:'s3',n:3,c:'#b4492f',min:11,title:'Gesundheit messen',
+  box:'<h3>Gesundheit in Ländern mit niedrigem Entwicklungsstand</h3><ul><li><b>Typische Merkmale:</b> Mangel- und Unterernährung, häufige Infektionskrankheiten (z. B. Malaria, Durchfallerkrankungen), wenige Ärztinnen und Ärzte und Krankenhäuser, oft unsicheres Trinkwasser, hohe Kinder- und Müttersterblichkeit.</li><li><b>Gängige Indikatoren:</b> Lebenserwartung, Kindersterblichkeit (unter 5 Jahren), Müttersterblichkeit, Ärzte je 10 000 Einwohner, Impfquote, Anteil der Menschen mit Zugang zu sauberem Trinkwasser.</li><li><b>Wichtig:</b> Die Lebenserwartung ist ein statistischer Durchschnitt für ein neugeborenes Kind bei gleichbleibenden Sterberaten – kein tatsächliches Sterbealter.</li></ul>'},
+ {id:'s4',n:4,c:'#2f5d9e',min:8,title:'Bildung messen',
+  box:'<h3>Bildung in Ländern mit niedrigem Entwicklungsstand</h3><ul><li><b>Typische Merkmale:</b> zu wenige Schulen und Lehrkräfte, große Klassen, kaum Material, früher Schulabbruch (oft wegen Arbeit oder Schulgebühren), Mädchen besonders benachteiligt.</li><li><b>Gängige Indikatoren:</b> Alphabetisierungsrate, mittlere und erwartete Schulbesuchsdauer, Einschulungs- bzw. Schulbesuchsquote, Abschlussquoten, Lernergebnisse.</li><li><b>Warum wichtig?</b> Bildung beeinflusst Gesundheit, Einkommen und die Zahl der Kinder: Fehlende Bildung und Armut können sich gegenseitig verstärken (Teufelskreis).</li></ul>'},
+ {id:'s5',n:5,c:'#2f7d4f',min:11,title:'Wirtschaft messen',
+  box:'<h3>Wirtschaft in Ländern mit niedrigem Entwicklungsstand</h3><ul><li><b>Typische Merkmale:</b> niedriges Einkommen, viele Menschen leben von Landwirtschaft (oft für den Eigenbedarf), wenig Industrie, Abhängigkeit von wenigen Exportgütern, großer informeller Sektor (Arbeit ohne Vertrag und Absicherung).</li><li><b>Gängige Indikatoren:</b> Bruttonationaleinkommen (BNE) pro Kopf, Beschäftigte nach Sektoren, Anteil von Rohstoffen an den Exporten, Verschuldung, Anteil der Menschen unter der Armutsgrenze.</li><li><b>Wichtig:</b> Das BNE misst das Einkommen der Inländer, das Bruttoinlandsprodukt (BIP) den Wert der im Inland erzeugten Waren und Dienstleistungen. „Kaufkraftbereinigt“ heißt: Man rechnet, was man für das Geld im jeweiligen Land tatsächlich kaufen kann.</li></ul>',extra:'MODEL'},
+ {id:'s6',n:6,c:'#6b3f8c',min:13,title:'Gesamturteil: Wie gut sind Indikatoren wirklich?',
+  box:'<h3>Der HDI als Gesamtindex</h3><p>Der HDI kombiniert drei Dimensionen: <b>lange und gesunde Lebensdauer</b> (Lebenserwartung), <b>Wissen</b> (Schulbesuchsdauer) und <b>Lebensstandard</b> (BNE pro Kopf). Für jede Dimension wird ein Index zwischen 0 und 1 gebildet; der HDI ist das geometrische Mittel der drei Indizes. Er wird jährlich vom Entwicklungsprogramm der Vereinten Nationen (UNDP) veröffentlicht.</p><p class="src">Zum Nachdenken: Jede Kennzahl vereinfacht. Entscheidend ist, <i>was</i> sie zeigt und <i>was nicht</i>.</p>'}
+];
+
+/* ============ Aufgaben ============ */
+var SCHW=['Durchschnittswert verdeckt Unterschiede im Land','misst nur das Ergebnis, nicht die Ursachen','Daten sind schwer zu erheben oder ungenau','sagt nichts über Qualität','zeigt nur einen Teilbereich']; 
+var AQ=['hoch','mittel','gering'];
+var T=[
+{id:'1.1',s:'s1',op:'nennen',afb:'I',lvl:'Basis',
+ text:'Nenne drei Dinge, die dir spontan zu „Entwicklungsland“ einfallen (Bilder, Begriffe, Merkmale). Hier gibt es kein Richtig oder Falsch – dein Vorwissen zählt.',
+ fields:[{id:'a',t:'text',label:'Meine drei Stichworte',rows:3,ph:'1. … 2. … 3. …'}],
+ info:'<p><b>Begriffe im Überblick</b></p><ul><li><b>Entwicklungsland:</b> Sammelbegriff für Staaten mit niedrigem Entwicklungsstand. Er fasst sehr unterschiedliche Länder zusammen und wird deshalb kritisiert.</li><li><b>LDC</b> (Least Developed Countries): von der UNO festgelegte Gruppe der am wenigsten entwickelten Länder. Kriterien sind ein sehr niedriges Pro-Kopf-Einkommen, eine schwache Ausstattung mit Gesundheit und Bildung sowie eine hohe wirtschaftliche und ökologische Verwundbarkeit.</li><li><b>Schwellenland:</b> wirtschaftlich aufstrebend, holt gegenüber den Industrieländern auf, hat aber noch deutliche Defizite.</li><li><b>Industrieland:</b> hohes Einkommen, wirtschaftliche Struktur mit viel Industrie und Dienstleistungen, hoher Entwicklungsstand.</li></ul><p>Die Grenzen zwischen diesen Gruppen sind fließend.</p>'},
+{id:'1.2',s:'s1',op:'zuordnen',afb:'I',lvl:'Basis',check:'match',
+ text:'Ordne jeder Beschreibung den passenden Begriff zu.',
+ opts:['LDC','Entwicklungsland','Schwellenland','Industrieland'],
+ fields:[
+  {id:'a',label:'Von der UNO nach Einkommen, Ausstattung mit Gesundheit/Bildung und Verwundbarkeit abgegrenzte Gruppe besonders benachteiligter Staaten',sol:'LDC'},
+  {id:'b',label:'Sehr hohes Pro-Kopf-Einkommen, viele Dienstleistungen und Industrie, hoher Entwicklungsstand',sol:'Industrieland'},
+  {id:'c',label:'Wirtschaftlich dynamisch, holt gegenüber reichen Ländern auf, hat aber noch deutliche Defizite',sol:'Schwellenland'},
+  {id:'d',label:'Sammelbegriff für sehr unterschiedliche Länder mit niedrigem Entwicklungsstand; wird wegen seiner Ungenauigkeit oft kritisiert',sol:'Entwicklungsland'}],
+ hint:'Unterstreiche in jeder Beschreibung die Schlüsselwörter („UNO“, „holt auf“, „Sammelbegriff“, „sehr hoch“) und streiche zugeordnete Begriffe durch.',
+ info:'<p><b>Methode Zuordnen:</b> Beginne mit der Beschreibung, die du am sichersten zuordnen kannst. Streiche den Begriff danach durch. Bei Unsicherheit hilft die Frage: Ist das eine <i>offizielle Liste</i> (mit festen Kriterien), eine <i>Entwicklungsrichtung</i> oder ein <i>Sammelbegriff</i>?</p>'},
+
+{id:'2.1',s:'s2',op:'ermitteln',afb:'I',lvl:'Basis',check:'num',
+ text:'Lies die Tabelle und berechne: <br>a) Um wie viele Kinder je 1000 Geburten ist die Kindersterblichkeit in Niger höher als in Deutschland? <br>b) Wie viel Prozent der Beschäftigten in Niger arbeiten <i>nicht</i> in der Landwirtschaft? (eine Nachkommastelle)',
+ fields:[{id:'a',t:'num',label:'a) Unterschied Kindersterblichkeit',unit:'Kinder je 1000',sol:113,tol:1,hint:'Bilde die Differenz der beiden Tabellenwerte (größerer minus kleinerer Wert).'},
+         {id:'b',t:'num',label:'b) Anteil außerhalb der Landwirtschaft',unit:'%',sol:29.4,tol:0.6,hint:'Alle Beschäftigten zusammen sind 100 %.'}],
+ info:'<p><b>Methode Tabellen lesen:</b> (1) Überschrift und Einheit lesen, (2) die richtige Spalte und Zeile mit dem Finger oder Cursor verfolgen, (3) Werte notieren, (4) rechnen. Differenz = größerer Wert − kleinerer Wert. Prozentwerte, die zusammen ein Ganzes bilden, ergeben 100 %.</p>'},
+{id:'2.2',s:'s2',op:'beschreiben',afb:'I',lvl:'Basis',
+ text:'Beschreibe mithilfe der Tabelle, wie sich Deutschland und Niger in je einem Indikator aus Gesundheit, Bildung und Wirtschaft unterscheiden. Belege mit Zahlen.',
+ fields:[{id:'a',t:'text',label:'Meine Beschreibung',rows:5}],
+ info:'<p><b>Methode Beschreiben:</b> Nenne zuerst den Bereich und den Indikator, dann die Werte beider Länder mit Einheit und zuletzt den Unterschied. Verwende Fachbegriffe (z. B. „Lebenserwartung“, „Alphabetisierungsrate“, „BNE pro Kopf“). Beschreiben heißt nicht erklären: Gründe sind hier nicht gefragt.</p>',
+ tips:['Gehe Bereich für Bereich vor. Pro Bereich genügt ein Satz mit zwei Zahlen und dem Unterschied.','Satzanfänge: „Im Bereich Gesundheit beträgt die … in Deutschland …, in Niger dagegen …“ – „Im Bereich Bildung …“ – „Bei der Wirtschaft zeigt sich …“']},
+
+{id:'3.1',s:'s3',op:'zuordnen',afb:'I',lvl:'Basis',check:'match',
+ text:'Ordne jeden Indikator zu: Misst er das <b>Ergebnis</b> (Wie gesund sind die Menschen?) oder die <b>Versorgung</b> (Wie gut ist das Gesundheitssystem bzw. das Umfeld ausgestattet?)',
+ opts:['Ergebnis','Versorgung'],
+ fields:[{id:'a',label:'Lebenserwartung bei Geburt',sol:'Ergebnis'},{id:'b',label:'Ärzte je 10 000 Einwohner',sol:'Versorgung'},{id:'c',label:'Kindersterblichkeit unter 5 Jahren',sol:'Ergebnis'},{id:'d',label:'Anteil geimpfter Kinder',sol:'Versorgung'},{id:'e',label:'Anteil der Menschen mit Zugang zu sauberem Trinkwasser',sol:'Versorgung'}],
+ hint:'Frage dich bei jedem Indikator: Ist das die <i>Wirkung</i> (so geht es den Menschen) oder das <i>Mittel</i> (das steht ihnen zur Verfügung)?',
+ info:'<p><b>Methode:</b> Ergebnis-Indikatoren beschreiben den Zustand der Menschen (z. B. wie viele überleben). Versorgungs- bzw. Input-Indikatoren beschreiben, was angeboten wird (z. B. Personal, Impfstoffe, Infrastruktur). Ein gutes Angebot garantiert noch kein gutes Ergebnis – und umgekehrt.</p>'},
+{id:'3.2',s:'s3',op:'ermitteln',afb:'I',lvl:'Erweiterung',check:'num',
+ text:'Der HDI rechnet die Lebenserwartung in einen Gesundheitsindex zwischen 0 und 1 um. Berechne ihn mit den Tabellenwerten für <br>a) Deutschland und <br>b) Niger. (zwei Nachkommastellen)',
+ fields:[{id:'a',t:'num',label:'a) Gesundheitsindex Deutschland',unit:'',sol:0.94,tol:0.01,hint:'Zähler: Wert minus 20. Nenner: 85 minus 20. Dann teilen.'},
+         {id:'b',t:'num',label:'b) Gesundheitsindex Niger',unit:'',sol:0.65,tol:0.01,hint:'Zähler: Wert minus 20. Nenner: 85 minus 20. Dann teilen.'}],
+ info:'<p><b>Methode:</b> Index = (Wert − Minimum) ÷ (Maximum − Minimum). Für die Lebenserwartung legt der HDI als Minimum 20 Jahre und als Maximum 85 Jahre fest. So entsteht eine Zahl zwischen 0 (schlechtester Wert) und 1 (bestmöglicher Wert), die sich mit den Indizes für Bildung und Einkommen zusammenfassen lässt.</p>'},
+{id:'3.3',s:'s3',op:'erklären',afb:'II',lvl:'Basis',
+ text:'Erkläre, warum die Kindersterblichkeit häufig als besonders aussagekräftiger Indikator für den Gesundheitszustand eines ganzen Landes gilt.',
+ fields:[{id:'a',t:'text',label:'Meine Erklärung',rows:5}],
+ info:'<p><b>Hintergrund:</b> Kleine Kinder sind besonders verletzlich. Ob sie die ersten Lebensjahre überleben, hängt von vielen Bedingungen ab, zum Beispiel Ernährung, Wasserqualität, Hygiene, Impfungen, Geburtshilfe, dem Wissen der Eltern und dem Einkommen der Familie. Eine Erklärung verbindet immer eine <i>Ursache</i> mit einer <i>Folge</i> („weil … deshalb …“).</p>',
+ tips:['Überlege, welche Lebensbedingungen darüber entscheiden, ob ein Kleinkind überlebt. Was sagt es über ein Land, wenn viele davon fehlen?','Satzanfänge: „Die Kindersterblichkeit ist aussagekräftig, weil sie von vielen Faktoren abhängt, nämlich …“ – „Wenn diese Bedingungen fehlen, …“ – „Deshalb kann man aus ihr ableiten, dass …“']},
+{id:'3.4',s:'s3',op:'beurteilen',afb:'III',lvl:'Basis',matrix:true,
+ text:'Beurteile, wie gut sich die drei Indikatoren eignen, den <b>Gesundheitsstand</b> eines Landes einzuschätzen. Wähle für jeden die Aussagekraft und die größte Schwäche. Begründe dann in zwei bis drei Sätzen, welchen du für den besten hältst.',
+ rows:[{id:'a',label:'Lebenserwartung'},{id:'b',label:'Kindersterblichkeit unter 5 Jahren'},{id:'c',label:'Ärzte je 10 000 Einwohner'}],
+ fields:[{id:'b',t:'text',label:'Meine Begründung',rows:4}],
+ info:'<p><b>Prüfkriterien für Indikatoren:</b></p><ul><li><b>Direkt:</b> Misst er genau das, worum es geht (hier: Gesundheit der Menschen) – oder nur etwas Verwandtes?</li><li><b>Vollständig:</b> Fasst er viele Aspekte zusammen oder nur einen Ausschnitt?</li><li><b>Messbar und vergleichbar:</b> Gibt es verlässliche Daten für alle Länder?</li><li><b>Verteilung:</b> Verrät er etwas darüber, wie ungleich die Werte innerhalb des Landes sind?</li></ul>',
+ tips:['Prüfe jeden Indikator mit den Kriterien aus dem Infomaterial. Wo wird er besonders gut, wo schwach?','Satzanfänge: „Am besten geeignet ist …, weil …“ – „Seine Schwäche ist allerdings, dass …“ – „Dagegen sagt … nur wenig aus, da …“']},
+
+{id:'4.1',s:'s4',op:'zuordnen',afb:'I',lvl:'Basis',check:'match',
+ text:'Ordne jeder Beschreibung den passenden Bildungsindikator zu.',
+ opts:['Alphabetisierungsrate','Mittlere Schulbesuchsdauer','Erwartete Schulbesuchsdauer','Schulbesuchsquote'],
+ fields:[
+  {id:'a',label:'Anteil der Erwachsenen, die lesen und schreiben können',sol:'Alphabetisierungsrate'},
+  {id:'b',label:'Anzahl der Jahre, die Erwachsene durchschnittlich tatsächlich zur Schule gegangen sind',sol:'Mittlere Schulbesuchsdauer'},
+  {id:'c',label:'Anzahl der Jahre, die ein heute eingeschultes Kind voraussichtlich zur Schule gehen wird',sol:'Erwartete Schulbesuchsdauer'},
+  {id:'d',label:'Anteil der Kinder im Schulalter, die tatsächlich eine Schule besuchen',sol:'Schulbesuchsquote'}],
+ hint:'Achte auf die Wörter „Erwachsene“ und „Kinder“, auf „tatsächlich“ und „voraussichtlich“ und darauf, ob ein Anteil oder eine Anzahl von Jahren gemeint ist.',
+ info:'<p><b>Methode:</b> Bei ähnlichen Fachbegriffen helfen drei Fragen: (1) Wer wird gezählt (Kinder oder Erwachsene)? (2) Wird ein Anteil in Prozent oder eine Dauer in Jahren angegeben? (3) Wurde etwas gemessen oder geschätzt („voraussichtlich“)?</p>'},
+{id:'4.2',s:'s4',op:'analysieren',afb:'II',lvl:'Basis',check:'radio',
+ text:'Ein Mitschüler sagt: „In Land X gehen 95 % der Kinder zur Grundschule – also ist das Bildungssystem dort gut.“ Welcher Einwand trifft den Kern am besten?',
+ radio:[
+  {v:'a',t:'Die Zahl ist zu hoch, um wahr zu sein.',ok:false,fb:'Es gibt keinen Grund, die Zahl anzuzweifeln. Der Fehler liegt in der Schlussfolgerung, nicht in der Zahl.'},
+  {v:'b',t:'Sie sagt nichts darüber, wie lange die Kinder in der Schule bleiben, ob sie abschließen und wie viel sie lernen.',ok:true,fb:'Richtig: Eine Quote zum Schulbesuch erfasst nur einen Ausschnitt. Dauer, Abschlüsse und Qualität bleiben offen.'},
+  {v:'c',t:'Grundschulen sind in Ländern mit niedrigem Entwicklungsstand grundsätzlich schlecht.',ok:false,fb:'Das ist eine pauschale Behauptung ohne Beleg. Sie trifft nicht den Fehler im Schluss des Mitschülers.'},
+  {v:'d',t:'Bildung hat mit Entwicklung nichts zu tun.',ok:false,fb:'Bildung ist eine der drei HDI-Dimensionen und beeinflusst Gesundheit und Einkommen.'}],
+ hint:'Frage dich: Was genau wird mit der Zahl gemessen – und was bleibt unbeantwortet?',
+ info:'<p><b>Methode Fehleranalyse:</b> Prüfe in zwei Schritten: (1) Was sagt die Zahl <i>tatsächlich</i> aus? (2) Welche Behauptung wird daraus abgeleitet? Ein Fehler entsteht oft, wenn aus einem Teilaspekt auf das Ganze geschlossen wird.</p>'},
+{id:'4.3',s:'s4',op:'beurteilen',afb:'III',lvl:'Basis',matrix:true,
+ text:'Beurteile, wie gut sich die drei Indikatoren eignen, den <b>Bildungsstand</b> eines Landes einzuschätzen. Wähle für jeden die Aussagekraft und die größte Schwäche. Begründe dann in zwei bis drei Sätzen, welchen du für den besten hältst.',
+ rows:[{id:'a',label:'Alphabetisierungsrate Erwachsene'},{id:'b',label:'Mittlere Schulbesuchsdauer Erwachsene'},{id:'c',label:'Schulbesuchsquote der Kinder'}],
+ fields:[{id:'b',t:'text',label:'Meine Begründung',rows:4}],
+ info:'<p><b>Hintergrund:</b> Bildung zeigt sich in der Dauer des Schulbesuchs, in erreichten Abschlüssen und in dem, was Menschen wirklich können. Manche Indikatoren blicken auf die heutigen Erwachsenen (und damit auf die Vergangenheit), andere auf die Kinder von heute (und damit auf die Zukunft). Wende die Prüfkriterien an: direkt, vollständig, messbar, Verteilung (siehe Infomaterial zu Aufgabe 3.4).</p>',
+ tips:['Frage dich: Blickt der Indikator auf die Vergangenheit (Erwachsene) oder auf die Gegenwart (Kinder)? Misst er Dauer, Fähigkeit oder nur Anwesenheit?','Satzanfänge: „Am aussagekräftigsten ist …, da …“ – „Der Nachteil von … liegt darin, dass …“ – „Ergänzend sollte man deshalb …“']},
+
+{id:'5.1',s:'s5',op:'analysieren',afb:'II',lvl:'Basis',check:'radio',
+ text:'Stelle im Modell oben <b>x = BNE pro Kopf</b> und <b>y = Lebenserwartung</b> ein (Hinweis: die logarithmische Achse macht die kleinen Werte besser lesbar). Welche Aussage beschreibt den Zusammenhang der fünf Länder richtig?',
+ radio:[
+  {v:'a',t:'Das Einkommen hat keinen Einfluss auf die Lebenserwartung.',ok:false,fb:'Im Modell liegen die Punkte mit höherem Einkommen alle höher, es gibt also einen Zusammenhang.'},
+  {v:'b',t:'Je höher das BNE pro Kopf, desto niedriger die Lebenserwartung.',ok:false,fb:'Das ist umgekehrt: Je höher das Einkommen, desto höher liegt der Punkt.'},
+  {v:'c',t:'Je höher das BNE pro Kopf, desto höher die Lebenserwartung – bei hohem Einkommen wird der Zuwachs aber immer kleiner.',ok:true,fb:'Richtig: Der Zusammenhang ist positiv, aber nicht gleichmäßig. Zwischen 2 000 und 3 000 US-$ steigt die Lebenserwartung deutlich, zwischen 19 000 und 66 000 US-$ nur wenig.'},
+  {v:'d',t:'Pro 1 000 US-$ mehr Einkommen steigt die Lebenserwartung immer um gleich viele Jahre (linearer Zusammenhang).',ok:false,fb:'Rechne nach: Von 2 000 auf 3 000 US-$ sind es +5 Jahre, von 19 000 auf 66 000 US-$ nur +5 Jahre. Der Zusammenhang ist nicht linear.'}],
+ hint:'Vergleiche den Abstand der Punkte auf der y-Achse einmal bei niedrigen und einmal bei hohen Einkommen. Stell die x-Achse auch einmal ohne Logarithmus ein.',
+ info:'<p><b>Methode Streudiagramm lesen:</b> Jeder Punkt ist ein Land. Prüfe (1) die Richtung (steigt oder fällt die Punktwolke?), (2) die Form (gleichmäßig oder abflachend?) und (3) Ausreißer. Ein Zusammenhang zeigt, dass zwei Größen gemeinsam auftreten – er allein beweist noch keine Ursache.</p>'},
+{id:'5.2',s:'s5',op:'ermitteln',afb:'I',lvl:'Basis',check:'num',
+ text:'Um das Wievielfache ist das BNE pro Kopf in Deutschland höher als in Niger? (auf eine ganze Zahl runden)',
+ fields:[{id:'a',t:'num',label:'BNE-Verhältnis Deutschland : Niger',unit:'-fach',sol:33,tol:2,hint:'Teile den größeren Wert durch den kleineren und runde.'}],
+ info:'<p><b>Methode:</b> Ein Verhältnis („Wievielfaches“) bildest du, indem du die beiden Werte durcheinander teilst: größerer ÷ kleinerer Wert. Beide Werte müssen in der gleichen Einheit stehen.</p>'},
+{id:'5.3',s:'s5',op:'erklären',afb:'II',lvl:'Basis',
+ text:'Erkläre, warum ein hoher Anteil der Beschäftigten in der Landwirtschaft als Merkmal von Ländern mit niedrigem Entwicklungsstand gilt.',
+ fields:[{id:'a',t:'text',label:'Meine Erklärung',rows:5}],
+ info:'<p><b>Hintergrund:</b> Wirtschaft wird in Sektoren eingeteilt: Landwirtschaft (primär), Industrie (sekundär) und Dienstleistungen (tertiär). Im Verlauf der Entwicklung verschiebt sich die Beschäftigung meist vom ersten zum zweiten und dritten Sektor. Wichtig für die Erklärung sind die Begriffe Produktivität (Wert pro Arbeitskraft), Eigenbedarf (Subsistenz) und Einkommen.</p>',
+ tips:['Überlege: Wie viel erzeugt und verdient eine Arbeitskraft in der Landwirtschaft im Vergleich zur Industrie oder zu Dienstleistungen? Was bedeutet es, wenn die Mehrheit in einem einzigen Sektor arbeitet?','Satzanfänge: „In der Landwirtschaft ist die Produktivität oft …, weil …“ – „Dadurch bleibt das Einkommen …“ – „Fehlen Arbeitsplätze in anderen Sektoren, dann …“']},
+{id:'5.4',s:'s5',op:'beurteilen',afb:'III',lvl:'Basis',matrix:true,
+ text:'Beurteile, wie gut sich die drei Indikatoren eignen, die <b>wirtschaftliche Entwicklung</b> eines Landes einzuschätzen. Wähle für jeden die Aussagekraft und die größte Schwäche. Begründe dann in zwei bis drei Sätzen, welchen du für den besten hältst.',
+ rows:[{id:'a',label:'BNE pro Kopf'},{id:'b',label:'Beschäftigte in der Landwirtschaft'},{id:'c',label:'Anteil der Rohstoffe an den Exporten'}],
+ fields:[{id:'b',t:'text',label:'Meine Begründung',rows:4}],
+ info:'<p><b>Hintergrund:</b> Das BNE pro Kopf entsteht, indem das gesamte Einkommen eines Landes durch die Zahl der Einwohner geteilt wird. Der Anteil der Beschäftigten in der Landwirtschaft zeigt die Berufsstruktur. Der Rohstoffanteil an den Exporten zeigt, wie einseitig ein Land Handel treibt. Wende die Prüfkriterien an: direkt, vollständig, messbar, Verteilung (siehe Infomaterial zu Aufgabe 3.4).</p>',
+ tips:['Frage dich: Was passiert, wenn in einem Land einige wenige sehr viel und viele sehr wenig verdienen? Was zeigt der Durchschnitt dann?','Satzanfänge: „Das BNE pro Kopf ist geeignet, weil …, sagt aber nicht, …“ – „Aussagekräftiger für die Struktur ist …, da …“ – „Allein reicht keiner der Indikatoren, denn …“']},
+
+{id:'6.1',s:'s6',op:'zuordnen',afb:'I',lvl:'Basis',check:'match',
+ text:'Ordne diese typischen Merkmale von Ländern mit niedrigem Entwicklungsstand dem passenden Bereich zu.',
+ opts:['Gesundheit','Bildung','Wirtschaft'],
+ fields:[
+  {id:'a',label:'hohe Müttersterblichkeit',sol:'Gesundheit'},
+  {id:'b',label:'viele Erwachsene können nicht lesen und schreiben',sol:'Bildung'},
+  {id:'c',label:'Mehrheit der Beschäftigten arbeitet in der Landwirtschaft',sol:'Wirtschaft'},
+  {id:'d',label:'verbreitete Mangelernährung',sol:'Gesundheit'},
+  {id:'e',label:'Mädchen verlassen die Schule früh',sol:'Bildung'},
+  {id:'f',label:'niedriges BNE pro Kopf',sol:'Wirtschaft'},
+  {id:'g',label:'kaum Zugang zu sauberem Trinkwasser',sol:'Gesundheit'},
+  {id:'h',label:'Exporte bestehen überwiegend aus wenigen Rohstoffen',sol:'Wirtschaft'}],
+ hint:'Frage dich bei jedem Merkmal: Betrifft es den Körper und die Lebenssicherung, das Lernen und Können oder Arbeit, Einkommen und Handel?',
+ info:'<p><b>Methode:</b> Manche Merkmale hängen mit mehreren Bereichen zusammen (z. B. Armut und Gesundheit). Entscheide nach dem <i>Kern</i>: Worum geht es zuerst – um Gesundheit, Lernen oder Erwerbsleben?</p>'},
+{id:'6.2',s:'s6',op:'beurteilen',afb:'II',lvl:'Basis',check:'radio',
+ text:'Welche Kombination aus drei Indikatoren bildet den Entwicklungsstand eines Landes am <b>vollständigsten</b> ab?',
+ radio:[
+  {v:'a',t:'BNE pro Kopf, Bruttoinlandsprodukt insgesamt, Exportvolumen',ok:false,fb:'Alle drei messen nur die Wirtschaft. Gesundheit und Bildung fehlen.'},
+  {v:'b',t:'Lebenserwartung, Kindersterblichkeit, Ärzte je 10 000 Einwohner',ok:false,fb:'Alle drei betreffen nur die Gesundheit. Bildung und Wirtschaft fehlen.'},
+  {v:'c',t:'Einwohnerzahl, Fläche, Lage der Hauptstadt',ok:false,fb:'Das sind Grunddaten, aber keine Aussagen über Lebensbedingungen.'},
+  {v:'d',t:'Lebenserwartung, Schulbesuchsdauer, BNE pro Kopf',ok:true,fb:'Richtig: Je ein Indikator aus Gesundheit, Bildung und Wirtschaft – das ist das Prinzip des HDI.'}],
+ hint:'Suche die Kombination, die möglichst verschiedene Lebensbereiche abdeckt.',
+ info:'<p><b>Methode:</b> Ein vollständiges Bild entsteht, wenn die Indikatoren <i>verschiedene</i> Dimensionen abdecken. Prüfe bei jeder Kombination, welche Bereiche fehlen.</p>'},
+{id:'6.3',s:'s6',op:'Stellung nehmen',afb:'III',lvl:'Erweiterung',
+ text:'Nimm kritisch Stellung zur Aussage: <b>„Der HDI reicht aus, um den Entwicklungsstand eines Landes zu bestimmen.“</b> Beziehe dich dabei auf Indikatoren aus den Stationen 3 bis 5 und beantworte damit auch die Leitfrage.',
+ fields:[{id:'a',t:'text',label:'Meine Stellungnahme',rows:9}],
+ info:'<p><b>Methode Stellung nehmen:</b> (1) Kläre, was der HDI umfasst. (2) Sammle Argumente <i>für</i> die Aussage. (3) Sammle Argumente <i>dagegen</i>. (4) Wäge ab und formuliere ein begründetes Urteil mit einem klaren Standpunkt. Jedes Argument braucht eine Begründung oder ein Beispiel.</p><p><b>Zum HDI:</b> drei Dimensionen (Lebenserwartung, Schulbesuchsdauer, BNE pro Kopf), jedes Land erhält eine Zahl, daraus ergibt sich ein Ranking und eine Einteilung in vier Gruppen.</p>',
+ tips:['Sammle zuerst Stärken: Was kann man mit einer einzigen Zahl gut? Dann Grenzen: Was kommt in einem Durchschnittswert aus drei Teilen nicht vor?','Hinweis: Die UNO veröffentlicht neben dem HDI weitere Indizes, zum Beispiel zur Ungleichheit, zu den Geschlechtern und zur Umweltbelastung. Was sagt das über Lücken des HDI? <br>Satzanfänge: „Für die Aussage spricht, dass …“ – „Dagegen spricht, dass …“ – „Insgesamt halte ich … für …, weil …“']}
+];
+
+var QUIZ=[
+ {id:'q1',f:'Ein Land hat durch Erdölexporte ein sehr hohes BNE pro Kopf. Was folgt daraus sicher?',
+  o:[{v:'a',t:'Das Land ist automatisch hoch entwickelt.'},{v:'b',t:'Man weiß noch nichts über Gesundheit, Bildung und die Verteilung des Einkommens – ein Durchschnittswert reicht nicht.'},{v:'c',t:'Das Land hat sicher gute Schulen und Krankenhäuser.'},{v:'d',t:'Das BNE pro Kopf ist dann kein brauchbarer Indikator mehr.'}],c:'b',
+  e:'Ein hohes Durchschnittseinkommen sagt nichts über Verteilung und Verwendung. Das BNE pro Kopf bleibt trotzdem ein nützlicher Indikator, aber er reicht allein nicht aus.'},
+ {id:'q2',f:'Welche drei Dimensionen gehen in den HDI ein?',
+  o:[{v:'a',t:'Einkommen, Umweltqualität, Bevölkerungszahl'},{v:'b',t:'Handel, Industrie, Landwirtschaft'},{v:'c',t:'Glück, Freiheit, Sicherheit'},{v:'d',t:'Gesundheit, Bildung, Lebensstandard (Einkommen)'}],c:'d',
+  e:'Der HDI beruht auf Lebenserwartung, Schulbesuchsdauer und BNE pro Kopf. Umwelt, Freiheit oder Sicherheit sind nicht enthalten.'},
+ {id:'q3',f:'In Niger beträgt die Lebenserwartung etwa 62 Jahre. Was bedeutet das?',
+  o:[{v:'a',t:'Niemand dort wird älter als 62 Jahre.'},{v:'b',t:'Die meisten Erwachsenen sterben mit 62 Jahren.'},{v:'c',t:'Ein neugeborenes Kind kann bei gleichbleibenden Sterberaten im Durchschnitt mit etwa 62 Lebensjahren rechnen.'},{v:'d',t:'Das Durchschnittsalter der Bevölkerung liegt bei 62 Jahren.'}],c:'c',
+  e:'Die Lebenserwartung ist ein statistischer Durchschnitt, auch weil viele Kinder früh sterben. Die Bevölkerung ist in Niger sehr jung, das Durchschnittsalter liegt deutlich niedriger.'},
+ {id:'q4',f:'Welche Aussage über den Begriff „Entwicklungsland“ stimmt?',
+  o:[{v:'a',t:'Er fasst sehr verschiedene Länder zusammen, deshalb schaut man auf mehrere Indikatoren und Gruppen.'},{v:'b',t:'Alle Entwicklungsländer sind gleich arm und gleich aufgebaut.'},{v:'c',t:'Es gibt ein einziges anerkanntes Maß für den Entwicklungsstand.'},{v:'d',t:'Entwicklungsländer haben nie Wirtschaftswachstum.'}],c:'a',
+  e:'Länder mit niedrigem Entwicklungsstand unterscheiden sich stark. Es gibt mehrere Indikatoren und Einteilungen (z. B. HDI-Gruppen, LDC). Viele dieser Länder wachsen wirtschaftlich.'},
+ {id:'q5',f:'Was sagt ein hoher Anteil der Beschäftigten in der Landwirtschaft (z. B. 70 %) aus?',
+  o:[{v:'a',t:'Das Land ist besonders reich an Nahrungsmitteln.'},{v:'b',t:'Das Land hat die modernste Landwirtschaft.'},{v:'c',t:'Die meisten Menschen arbeiten in einem Sektor mit meist geringem Einkommen pro Beschäftigtem – ein Hinweis auf eine wenig vielfältige Wirtschaft.'},{v:'d',t:'Das Land exportiert vor allem Agrarprodukte.'}],c:'c',
+  e:'Der Indikator zeigt, wo die Menschen arbeiten, nicht wie viel Nahrung es gibt oder was exportiert wird.'},
+ {id:'q6',f:'Die Alphabetisierungsrate eines Landes liegt bei 95 %. Was folgt daraus?',
+  o:[{v:'a',t:'Das Bildungssystem ist sicher gut.'},{v:'b',t:'95 % der Erwachsenen können lesen und schreiben – über Schuldauer, Qualität und höhere Abschlüsse sagt das wenig.'},{v:'c',t:'95 % der Bevölkerung haben studiert.'},{v:'d',t:'Alle Kinder gehen zur Schule.'}],c:'b',
+  e:'Die Alphabetisierungsrate misst nur die Grundfähigkeit Lesen und Schreiben bei Erwachsenen.'}
+];
+
+var SELF=[
+ {id:'e1',t:'Ich kann typische Merkmale von Ländern mit niedrigem Entwicklungsstand in Gesundheit, Bildung und Wirtschaft nennen.'},
+ {id:'e2',t:'Ich kann Indikatoren aus einer Tabelle ablesen, vergleichen und damit rechnen.'},
+ {id:'e3',t:'Ich kann begründet beurteilen, wie gut ein einzelner Indikator den Entwicklungsstand abbildet.'},
+ {id:'e4',t:'Ich kann kritisch Stellung zum HDI nehmen.'}
+];
+var SELFOPT=['sicher','teilweise','noch nicht'];
+
+var LEGENDE={
+ format:'Kennung der Abgabedatei',version:'Version des Dateiformats',dokument:'Titel, Thema, Klasse und Kennung des Arbeitsblatts',kuerzel:'selbst gewähltes Kürzel (pseudonym)',kurs:'Kurs oder Klasse laut Eingabe',datumEintrag:'Datum laut Eingabe im Kopfbereich',exportiert:'Zeitpunkt des Exports (ISO)',
+ zeit:'ersterStart; sitzungen (Start, Ende, aktiveMinuten); aktive Minuten gesamt und je Station (Fenster sichtbar und Aktivität in den letzten 90 s)',
+ aufgaben:'je Aufgabe: Operator, Niveau (Basis/Erweiterung), Anforderungsbereich, Aufgabentext, antworten (Feldbeschriftung und Wert), hilfen (Art, geoeffnet, anzahlOeffnungen, erstmals, eigenerTextBeimOeffnenZeichen), pruefversuche (Zeit, Eingaben, Ergebnis), auswertung (automatisch, Sollwert, Toleranz, richtig/falsch aus der aktuellen Eingabe)',
+ selbstcheck:'je Quizfrage: Frage, richtige Antwort, erste Antwort vor Anzeige der Lösung, erste richtig, letzte Antwort, Anzahl der Wechsel',
+ selbsteinschaetzung:'Antwort je Aussage (sicher/teilweise/noch nicht)',exitTicket:'Freitext des Exit-Tickets',
+ modellnutzung:'Anzahl der Interaktionen mit dem Streudiagramm, erster Zeitpunkt, ausprobierte Achsenkombinationen',
+ eingefuegteTexte:'je Feld: Anzahl der Einfügungen aus der Zwischenablage und Zeichenzahl (kein Inhalt)',anzahlExporte:'wie oft die Datei exportiert wurde',
+ pruefsumme:'FNV-1a (32 Bit, hexadezimal) über JSON.stringify des Objekts ohne dieses Feld; Reihenfolge der Schlüssel wie in der Datei'
+};
+
+/* ============ Hilfsfunktionen ============ */
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function strip(h){return h.replace(/<br\s*\/?>/g,' ').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();}
+function nowIso(){return new Date().toISOString();}
+function fmt(v,d){return Number(v).toLocaleString('de-DE',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
+function taskById(id){for(var i=0;i<T.length;i++){if(T[i].id===id)return T[i];}return null;}
+function parseNum(s){if(s==null)return null;s=String(s).trim().replace(/\s/g,'').replace(',','.');if(s==='')return null;var v=Number(s);return isFinite(v)?v:null;}
+
+/* ============ Speicher ============ */
+var storageOK=true,mem={};
+try{localStorage.setItem(NS+'t','1');localStorage.removeItem(NS+'t');}catch(e){storageOK=false;}
+function sget(k){if(storageOK){try{return localStorage.getItem(NS+k);}catch(e){storageOK=false;}}return mem[k]==null?null:mem[k];}
+function sset(k,v){if(storageOK){try{localStorage.setItem(NS+k,v);return;}catch(e){storageOK=false;showBanner();}}mem[k]=v;}
+function sdel(k){try{localStorage.removeItem(NS+k);}catch(e){}delete mem[k];}
+function showBanner(){$('#banner').classList.add('show');}
+function defaults(){return {fields:{},help:{},tries:{},quiz:{},self:{},paste:{},time:{},model:{uses:0,first:null,combos:[]},sessions:[],first:null,exports:0};}
+function load(){try{var r=sget('state');if(r){var o=JSON.parse(r);var d=defaults();for(var k in d){if(!(k in o))o[k]=d[k];}return o;}}catch(e){}return defaults();}
+var S=load();var noSave=false,saveT=null;
+function save(){if(noSave)return;clearTimeout(saveT);saveT=setTimeout(saveNow,300);}
+function saveNow(){if(noSave)return;sset('state',JSON.stringify(S));}
+
+/* ============ Felder je Aufgabe vorbereiten ============ */
+function prep(){
+ T.forEach(function(t){
+  t.keys=[];
+  if(t.rows&&t.matrix){t.rows.forEach(function(r){
+    t.keys.push({key:'f_'+t.id+'_'+r.id+'_a',label:r.label+' – Aussagekraft'});
+    t.keys.push({key:'f_'+t.id+'_'+r.id+'_s',label:r.label+' – größte Schwäche'});});}
+  if(t.radio){t.keys.push({key:'f_'+t.id+'_r',label:'Auswahl'});}
+  (t.fields||[]).forEach(function(f){t.keys.push({key:'f_'+t.id+'_'+f.id,label:f.label});});
+ });
+}
+prep();
+
+/* ============ Rendering ============ */
+function dataTable(){
+ var h='<div class="tscroll"><table class="data"><caption class="src" style="text-align:left;caption-side:bottom;padding-top:6px">Quellen: UNDP (HDR 2025, Daten 2023), UN IGME, UNESCO, Weltbank, ILO; teils gerundete Werte, Datenjahre ca. 2022–2023.</caption><thead><tr><th scope="col">Indikator</th>';
+ LAND.forEach(function(l){h+='<th scope="col">'+l.n+'</th>';});
+ h+='</tr><tr><th scope="row">HDI-Gruppe</th>';
+ LAND.forEach(function(l){var c=l.g==='sehr hoch'?'g-sehr':l.g==='hoch'?'g-hoch':l.g==='mittel'?'g-mittel':'g-niedrig';h+='<td><span class="'+c+'">'+l.g+'</span></td>';});
+ h+='</tr></thead><tbody>';
+ var areaCol={'Gesamt':'#5a5a5a','Gesundheit':'#b4492f','Bildung':'#2f5d9e','Wirtschaft':'#2f7d4f'};
+ var last='';
+ IND.forEach(function(i){
+  if(i.bereich!==last){last=i.bereich;h+='<tr class="area"><td colspan="6" style="background:'+areaCol[last]+'">'+last+'</td></tr>';}
+  h+='<tr><th scope="row" style="text-align:left;font-weight:500">'+i.n+'</th>';
+  D[i.k].forEach(function(v){h+='<td>'+fmt(v,i.d)+'</td>';});
+  h+='</tr>';
+ });
+ return h+'</tbody></table></div>';
+}
+function modelHTML(){
+ var opts=IND.map(function(i){return '<option value="'+i.k+'">'+esc(i.n)+'</option>';}).join('');
+ return '<div class="model" id="model" data-station="s5"><h3>Interaktives Modell: Wie hängen Indikatoren zusammen?</h3><p class="src" style="margin:.2rem 0">Wähle zwei Indikatoren. Jeder Punkt ist ein Land. Die Farbe zeigt die HDI-Gruppe.</p>'+
+ '<div class="mctl"><label>x-Achse<select id="mx" data-key="m_x">'+opts+'</select></label><label>y-Achse<select id="my" data-key="m_y">'+opts+'</select></label><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mlog" data-key="m_log"> x-Achse logarithmisch</label></div>'+
+ '<svg id="msvg" class="chart" viewBox="0 0 640 380" role="img" aria-label="Streudiagramm der fünf Länder"></svg>'+
+ '<p class="mread" id="mread" aria-live="polite">Bewege die Maus über einen Punkt oder wähle ihn mit der Tab-Taste aus.</p>'+
+ '<div class="legend"><span><i style="background:#0f5f66"></i>sehr hoch</span><span><i style="background:#2c8f93"></i>hoch</span><span><i style="background:#d49a1f"></i>mittel</span><span><i style="background:#b4492f"></i>niedrig</span></div></div>';
+}
+function fieldHTML(t,f){
+ var key='f_'+t.id+'_'+f.id;
+ if(f.t==='text'){
+  return '<div class="fld"><label for="'+key+'">'+esc(f.label)+'</label><textarea id="'+key+'" data-key="'+key+'" rows="'+(f.rows||4)+'"'+(f.ph?' placeholder="'+esc(f.ph)+'"':'')+'></textarea></div>';
+ }
+ if(f.t==='num'){
+  return '<div class="numrow"><label for="'+key+'">'+esc(f.label)+'</label><input id="'+key+'" data-key="'+key+'" type="text" inputmode="decimal" autocomplete="off"><span class="unit">'+esc(f.unit||'')+'</span></div>';
+ }
+ return '';
+}
+function taskHTML(t){
+ var a=AFBN[t.afb];
+ var h='<article class="task" id="t'+t.id+'" data-task="'+t.id+'"><header class="thead"><span class="tnum">'+t.id+'</span>'+
+  '<span class="op a'+a+'" tabindex="0" role="button" aria-describedby="otip'+t.id+'">'+esc(t.op)+'<span class="optip" role="tooltip" id="otip'+t.id+'">'+esc(OPS[t.op])+'</span></span>'+
+  '<span class="afb">Anforderungsbereich '+t.afb+'</span><span class="lvl '+(t.lvl==='Basis'?'basis':'erw')+'">'+t.lvl+'</span></header>'+
+  '<div class="ttext">'+t.text+'</div>';
+ if(t.check==='match'){
+  h+='<table class="mt"><tbody>';
+  t.fields.forEach(function(f){
+   var key='f_'+t.id+'_'+f.id;
+   h+='<tr><td><label for="'+key+'">'+esc(f.label)+'</label></td><td style="white-space:nowrap"><select id="'+key+'" data-key="'+key+'"><option value="">– wählen –</option>'+t.opts.map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select></td></tr>';
+  });
+  h+='</tbody></table>';
+ } else if(t.check==='num'){
+  t.fields.forEach(function(f){h+=fieldHTML(t,f);});
+ } else if(t.check==='radio'){
+  h+='<div class="opts" role="radiogroup">'+t.radio.map(function(o){return '<label class="opt"><input type="radio" name="f_'+t.id+'_r" data-key="f_'+t.id+'_r" value="'+o.v+'"><span>'+esc(o.t)+'</span></label>';}).join('')+'</div>';
+ } else if(t.matrix){
+  h+='<table class="mt"><thead><tr><th>Indikator</th><th>Aussagekraft</th><th>größte Schwäche</th></tr></thead><tbody>';
+  t.rows.forEach(function(r){
+   var ka='f_'+t.id+'_'+r.id+'_a',ks='f_'+t.id+'_'+r.id+'_s';
+   h+='<tr><td>'+esc(r.label)+'</td><td><select aria-label="Aussagekraft '+esc(r.label)+'" data-key="'+ka+'"><option value="">–</option>'+AQ.map(function(o){return '<option>'+o+'</option>';}).join('')+'</select></td>'+
+      '<td><select aria-label="Schwäche '+esc(r.label)+'" data-key="'+ks+'"><option value="">–</option>'+SCHW.map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select></td></tr>';
+  });
+  h+='</tbody></table>';
+  t.fields.forEach(function(f){h+=fieldHTML(t,f);});
+ } else {
+  t.fields.forEach(function(f){h+=fieldHTML(t,f);});
+ }
+ if(t.check){h+='<div class="chk"><button class="btn" type="button" data-check="'+t.id+'">Prüfen</button></div><div class="fb" id="fb'+t.id+'" role="status" aria-live="polite"></div>';}
+ if(t.info){h+='<details class="help info" data-task="'+t.id+'" data-kind="info"><summary>Infomaterial</summary><div class="hbody">'+t.info+'</div></details>';}
+ (t.tips||[]).forEach(function(tp,i){h+='<details class="help tip" data-task="'+t.id+'" data-kind="tip" data-idx="'+i+'"><summary>Tipp '+(i+1)+'</summary><div class="hbody">'+tp+'</div></details>';});
+ return h+'</article>';
+}
+function renderAll(){
+ var html=STATIONS.map(function(st){
+  var extra=st.extra==='DATA'?dataTable():st.extra==='MODEL'?modelHTML():'';
+  return '<section class="station" id="'+st.id+'" data-station="'+st.id+'" style="--c:'+st.c+'" aria-labelledby="'+st.id+'h"><header class="sthead"><span class="stnum">'+st.n+'</span><h2 id="'+st.id+'h">'+st.title+'</h2><span class="stmin">ca. '+st.min+' Min.</span></header><div class="box">'+st.box+'</div>'+extra+T.filter(function(t){return t.s===st.id;}).map(taskHTML).join('')+'</section>';
+ }).join('');
+ $('#stations').innerHTML=html;
+ // Quiz
+ $('#quiz').innerHTML=QUIZ.map(function(q,qi){
+  return '<fieldset class="q" id="'+q.id+'"><legend>Frage '+(qi+1)+': '+esc(q.f)+'</legend>'+q.o.map(function(o){return '<label class="opt" data-v="'+o.v+'"><input type="radio" name="'+q.id+'" value="'+o.v+'"><span>'+esc(o.t)+'</span></label>';}).join('')+'<div class="qfb" id="qfb_'+q.id+'" role="status" aria-live="polite"></div></fieldset>';
+ }).join('');
+ $('#selfbox').innerHTML=SELF.map(function(s){
+  return '<div class="srow"><div>'+esc(s.t)+'</div><div class="likert" role="radiogroup" aria-label="'+esc(s.t)+'">'+SELFOPT.map(function(o){return '<label><input type="radio" name="self_'+s.id+'" value="'+o+'"> '+o+'</label>';}).join('')+'</div></div>';
+ }).join('');
+}
+
+/* ============ Wiederherstellen ============ */
+function restore(){
+ $$('[data-key]').forEach(function(el){
+  var k=el.getAttribute('data-key'),v=S.fields[k];
+  if(v==null)return;
+  if(el.type==='radio'){el.checked=(el.value===v);}
+  else if(el.type==='checkbox'){el.checked=!!v;}
+  else el.value=v;
+ });
+ QUIZ.forEach(function(q){var r=S.quiz[q.id];if(r&&r.last){var inp=$('input[name="'+q.id+'"][value="'+r.last+'"]');if(inp)inp.checked=true;showQuizFb(q,r.last);}});
+ SELF.forEach(function(s){var v=S.self[s.id];if(v){var inp=$$('input[name="self_'+s.id+'"]').filter(function(i){return i.value===v;})[0];if(inp)inp.checked=true;}});
+ T.forEach(function(t){if(t.check&&S.tries[t.id]&&S.tries[t.id].length){renderFb(t,evalTask(t));}});
+}
+
+/* ============ Auswertung automatischer Aufgaben ============ */
+function evalTask(t){
+ var r={ok:true,items:[]};
+ if(t.check==='num'){
+  t.fields.forEach(function(f){var key='f_'+t.id+'_'+f.id;var raw=S.fields[key];var v=parseNum(raw);var ok=v!==null&&Math.abs(v-f.sol)<=f.tol+1e-9;r.items.push({id:f.id,label:f.label,sol:f.sol,tol:f.tol,eingabe:raw==null?'':String(raw),ok:ok,hint:f.hint});r.ok=r.ok&&ok;});
+ } else if(t.check==='match'){
+  t.fields.forEach(function(f){var key='f_'+t.id+'_'+f.id;var raw=S.fields[key];var ok=raw===f.sol;r.items.push({id:f.id,label:f.label,sol:f.sol,tol:null,eingabe:raw==null?'':String(raw),ok:ok});r.ok=r.ok&&ok;});
+ } else if(t.check==='radio'){
+  var raw=S.fields['f_'+t.id+'_r'];var opt=null,cor=null;t.radio.forEach(function(o){if(o.v===raw)opt=o;if(o.ok)cor=o;});
+  var ok=!!(opt&&opt.ok);r.items.push({id:'r',label:'Auswahl',sol:cor?cor.v:null,tol:null,eingabe:raw==null?'':String(raw),ok:ok,fb:opt?opt.fb:''});r.ok=ok;
+ }
+ return r;
+}
+function renderFb(t,r){
+ var box=document.getElementById('fb'+t.id);if(!box)return;
+ var h='';
+ if(t.check==='radio'){
+  var it=r.items[0];
+  h='<p class="'+(it.ok?'ok':'no')+'">'+(it.ok?'✓ Richtig. ':'✗ Noch nicht. ')+'</p><p>'+esc(it.fb||'')+'</p>';
+  if(!it.ok&&t.hint)h+='<p class="hint">Hinweis: '+t.hint+'</p>';
+ } else {
+  h='<ul>';
+  r.items.forEach(function(it){
+   var lab=it.label.length>70?it.label.slice(0,67)+'…':it.label;
+   h+='<li><span class="'+(it.ok?'ok':'no')+'">'+(it.ok?'✓':'✗')+'</span> '+esc(lab)+'</li>';
+  });
+  h+='</ul>';
+  if(r.ok)h+='<p class="ok">Alles richtig.</p>';
+  else{var hints=[];r.items.forEach(function(it){if(!it.ok&&it.hint&&hints.indexOf(it.hint)<0)hints.push(it.hint);});
+   h+='<p class="hint">Hinweis: '+(hints.length?esc(hints.join(' ')):(t.hint||'Prüfe die markierten Zeilen noch einmal.'))+'</p>';}
+ }
+ box.innerHTML=h;
+}
+function doCheck(id){
+ var t=taskById(id);if(!t)return;
+ var r=evalTask(t);
+ var complete=r.items.every(function(i){return i.eingabe!=='';});
+ var box=document.getElementById('fb'+t.id);
+ if(!complete){box.innerHTML='<p class="hint">Bitte fülle zuerst alle Felder dieser Aufgabe aus.</p>';return;}
+ var eing={};r.items.forEach(function(i){eing[i.label]=i.eingabe;});
+ (S.tries[t.id]=S.tries[t.id]||[]).push({zeit:nowIso(),eingaben:eing,ergebnis:{richtig:r.ok,jeFeld:r.items.map(function(i){return i.ok;})}});
+ renderFb(t,r);save();updateBox();
+}
+
+/* ============ Protokoll: Hilfen, Einfügen, Eingaben ============ */
+function textLen(t){var n=0;t.keys.forEach(function(k){var v=S.fields[k.key];if(typeof v==='string')n+=v.trim().length;});return n;}
+document.addEventListener('toggle',function(e){
+ var d=e.target;if(!d||!d.matches||!d.matches('details.help')||!d.open)return;
+ var tid=d.getAttribute('data-task');if(!tid)return;
+ var kind=d.getAttribute('data-kind'),idx=d.getAttribute('data-idx')||'0';
+ var id=kind==='info'?'info':'tip'+idx;
+ var h=(S.help[tid]=S.help[tid]||{});var e2=(h[id]=h[id]||{opens:0,first:null,len:null});
+ e2.opens++;if(!e2.first){e2.first=nowIso();e2.len=textLen(taskById(tid));}
+ save();updateBox();
+},true);
+document.addEventListener('paste',function(e){
+ var el=e.target;if(!el||!el.getAttribute)return;var k=el.getAttribute('data-key');if(!k)return;
+ var txt='';try{txt=(e.clipboardData||window.clipboardData).getData('text')||'';}catch(x){}
+ var p=(S.paste[k]=S.paste[k]||{count:0,chars:0});p.count++;p.chars+=txt.length;save();
+},true);
+function onField(e){
+ var el=e.target;if(!el||!el.getAttribute)return;var k=el.getAttribute('data-key');if(!k)return;
+ if(el.type==='radio'){if(el.checked)S.fields[k]=el.value;}
+ else if(el.type==='checkbox'){S.fields[k]=el.checked;}
+ else S.fields[k]=el.value;
+ save();updateBox();
+ if(k==='h_kuerzel')updateBox();
+}
+document.addEventListener('input',onField);
+document.addEventListener('change',onField);
+document.addEventListener('click',function(e){
+ var b=e.target.closest&&e.target.closest('[data-check]');
+ if(b)doCheck(b.getAttribute('data-check'));
+});
+
+/* ============ Quiz & Selbsteinschätzung ============ */
+function showQuizFb(q,val){
+ var box=$('#qfb_'+q.id);var ok=val===q.c;
+ $$('#'+q.id+' .opt').forEach(function(l){l.classList.remove('right','wrong');var v=l.getAttribute('data-v');if(v===q.c)l.classList.add('right');else if(v===val)l.classList.add('wrong');});
+ box.innerHTML='<b class="'+(ok?'ok':'no')+'">'+(ok?'✓ Richtig.':'✗ Nicht ganz.')+'</b> '+esc(q.e);
+}
+document.addEventListener('change',function(e){
+ var el=e.target;if(!el||el.type!=='radio')return;
+ var q=QUIZ.filter(function(x){return x.id===el.name;})[0];
+ if(q){var r=(S.quiz[q.id]=S.quiz[q.id]||{first:null,firstT:null,changes:[],last:null});
+  if(!r.first){r.first=el.value;r.firstT=nowIso();}
+  else if(r.last!==el.value){r.changes.push({zeit:nowIso(),von:r.last,zu:el.value});}
+  r.last=el.value;showQuizFb(q,el.value);save();updateBox();return;}
+ if(el.name&&el.name.indexOf('self_')===0){S.self[el.name.slice(5)]=el.value;save();}
+});
+
+/* ============ Modell ============ */
+function niceStep(range,n){var raw=range/n;var p=Math.pow(10,Math.floor(Math.log10(raw)));var f=raw/p;var m=f<1.5?1:f<3?2:f<7?5:10;return m*p;}
+function linTicks(lo,hi){var st=niceStep(hi-lo,5);var a=Math.floor(lo/st+1e-9)*st,b=Math.ceil(hi/st-1e-9)*st;var t=[];for(var v=a;v<=b+st/1e6;v+=st)t.push(+v.toFixed(10));return t;}
+function logTicks(lo,hi){var a=Math.floor(Math.log10(lo)),b=Math.ceil(Math.log10(hi));var t=[];for(var e=a;e<=b;e++){[1,2,5].forEach(function(m){var v=m*Math.pow(10,e);if(v>=Math.pow(10,a)-1e-9&&v<=Math.pow(10,b)+1e-9)t.push(v);});}return t;}
+function indByKey(k){for(var i=0;i<IND.length;i++)if(IND[i].k===k)return IND[i];}
+function drawModel(){
+ var svg=$('#msvg');if(!svg)return;
+ var xk=$('#mx').value,yk=$('#my').value,lg=$('#mlog').checked;
+ var xi=indByKey(xk),yi=indByKey(yk);
+ var W=640,H=380,ml=66,mr=26,mt=16,mb=58,pw=W-ml-mr,ph=H-mt-mb;
+ var xs=D[xk],ys=D[yk];
+ function dom(vals,log){var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);var tk;
+  if(log){tk=logTicks(mn,mx);}else{var pad=(mx-mn)*0.08||1;var lo=mn-pad,hi=mx+pad;if(mn>=0)lo=Math.max(0,lo);tk=linTicks(lo,hi);}
+  return {lo:tk[0],hi:tk[tk.length-1],t:tk,log:log};}
+ var dx=dom(xs,lg),dy=dom(ys,false);
+ function px(v){var f=dx.log?(Math.log10(v)-Math.log10(dx.lo))/(Math.log10(dx.hi)-Math.log10(dx.lo)):(v-dx.lo)/(dx.hi-dx.lo);return ml+f*pw;}
+ function py(v){return mt+ph-(v-dy.lo)/(dy.hi-dy.lo)*ph;}
+ var s='';
+ function tf(v){var dec=Number.isInteger(v)?0:Math.min(3,(String(v).split('.')[1]||'').length);return fmt(v,dec);}
+ dx.t.forEach(function(v){var x=px(v);s+='<line class="gr" x1="'+x+'" y1="'+mt+'" x2="'+x+'" y2="'+(mt+ph)+'"/><text x="'+x+'" y="'+(mt+ph+16)+'" text-anchor="middle">'+tf(v)+'</text>';});
+ dy.t.forEach(function(v){var y=py(v);s+='<line class="gr" x1="'+ml+'" y1="'+y+'" x2="'+(ml+pw)+'" y2="'+y+'"/><text x="'+(ml-6)+'" y="'+(y+4)+'" text-anchor="end">'+tf(v)+'</text>';});
+ s+='<line class="ax" x1="'+ml+'" y1="'+(mt+ph)+'" x2="'+(ml+pw)+'" y2="'+(mt+ph)+'"/><line class="ax" x1="'+ml+'" y1="'+mt+'" x2="'+ml+'" y2="'+(mt+ph)+'"/>';
+ s+='<text x="'+(ml+pw/2)+'" y="'+(H-10)+'" text-anchor="middle">'+esc(xi.n)+(lg?' – logarithmische Skala':'')+'</text>';
+ s+='<text transform="translate(16 '+(mt+ph/2)+') rotate(-90)" text-anchor="middle">'+esc(yi.n)+'</text>';
+ LAND.forEach(function(l,i){
+  var x=px(xs[i]),y=py(ys[i]);var right=x>ml+pw-100;
+  var lab=l.n+': '+xi.kurz+' '+fmt(xs[i],xi.d)+', '+yi.kurz+' '+fmt(ys[i],yi.d);
+  s+='<g class="pt" tabindex="0" data-i="'+i+'" role="img" aria-label="'+esc(lab)+'"><title>'+esc(lab)+'</title><circle cx="'+x+'" cy="'+y+'" r="9" fill="'+l.col+'"/><text x="'+(right?x-13:x+13)+'" y="'+(y+4)+'" text-anchor="'+(right?'end':'start')+'">'+l.n+'</text></g>';
+ });
+ svg.innerHTML=s;
+ svg.setAttribute('aria-label','Streudiagramm: x '+xi.n+', y '+yi.n);
+}
+function modelRead(i){var xi=indByKey($('#mx').value),yi=indByKey($('#my').value);var l=LAND[i];$('#mread').textContent=l.n+' (HDI-Gruppe '+l.g+'): '+xi.kurz+' = '+fmt(D[xi.k][i],xi.d)+'; '+yi.kurz+' = '+fmt(D[yi.k][i],yi.d)+'.';}
+function modelLog(){
+ var m=S.model;m.uses++;if(!m.first)m.first=nowIso();
+ var c=$('#mx').value+'|'+$('#my').value+'|'+($('#mlog').checked?'log':'lin');
+ if(m.combos.indexOf(c)<0)m.combos.push(c);
+ save();
+}
+function initModel(){
+ var mx=$('#mx');if(!mx)return;
+ if(S.fields.m_x==null)mx.value='gni';
+ if(S.fields.m_y==null)$('#my').value='le';
+ drawModel();
+ ['mx','my','mlog'].forEach(function(id){$('#'+id).addEventListener('change',function(){drawModel();modelLog();});});
+ var svg=$('#msvg');
+ svg.addEventListener('mouseover',function(e){var g=e.target.closest('.pt');if(g)modelRead(+g.getAttribute('data-i'));});
+ svg.addEventListener('focusin',function(e){var g=e.target.closest('.pt');if(g)modelRead(+g.getAttribute('data-i'));});
+}
+
+/* ============ Zeiterfassung ============ */
+var lastAct=Date.now();
+['mousemove','keydown','scroll','touchstart','click','input','wheel'].forEach(function(ev){window.addEventListener(ev,function(){lastAct=Date.now();},{passive:true,capture:true});});
+function curStation(){
+ var best=null,bo=0,vh=window.innerHeight||800;
+ $$('[data-station]').forEach(function(s){var r=s.getBoundingClientRect();var o=Math.max(0,Math.min(r.bottom,vh)-Math.max(r.top,0));if(o>bo){bo=o;best=s.getAttribute('data-station');}});
+ return best;
+}
+function startSession(){
+ if(!S.first)S.first=nowIso();
+ S.sessions.push({start:nowIso(),last:nowIso(),active:0});
+}
+var tickN=0;
+function tick(){
+ var n=Date.now();
+ var ses=S.sessions[S.sessions.length-1];
+ if(document.visibilityState==='visible'&&n-lastAct<90000){
+  var st=curStation();
+  if(st){S.time[st]=(S.time[st]||0)+1;}
+  if(ses){ses.active+=1;ses.last=nowIso();}
+ }
+ tickN++;
+ if(tickN%5===0){saveNow();updateBox();}
+}
+
+/* ============ Abgabe-Box ============ */
+function filled(){
+ var tot=0,ok=0;
+ T.forEach(function(t){
+  var groups={};
+  t.keys.forEach(function(k){tot++;var v=S.fields[k.key];if(v!=null&&String(v).trim()!=='')ok++;});
+ });
+ return [ok,tot];
+}
+function helpStats(){
+ var tot=0,opened=0,opens=0;
+ T.forEach(function(t){
+  if(t.info){tot++;}
+  tot+=(t.tips||[]).length;
+  var h=S.help[t.id]||{};
+  Object.keys(h).forEach(function(k){if(h[k].opens>0){opened++;opens+=h[k].opens;}});
+ });
+ return [opened,tot,opens];
+}
+function triesTotal(){var n=0;Object.keys(S.tries).forEach(function(k){n+=S.tries[k].length;});return n;}
+function activeMin(){var s=0;Object.keys(S.time).forEach(function(k){s+=S.time[k];});return s/60;}
+function kuerzel(){return String(S.fields.h_kuerzel||'').trim();}
+function kuerzelOK(){return /^[A-Za-z0-9ÄÖÜäöüß_\-]{2,24}$/.test(kuerzel());}
+function updateBox(){
+ var f=filled(),h=helpStats();
+ var q=QUIZ.filter(function(x){return S.quiz[x.id]&&S.quiz[x.id].first;}).length;
+ $('#a_felder').textContent=f[0]+' von '+f[1];
+ $('#a_quiz').textContent=q+' von '+QUIZ.length;
+ $('#a_hilfen').textContent=h[0]+' von '+h[1]+' (insgesamt '+h[2]+' Öffnungen)';
+ $('#a_pruef').textContent=triesTotal();
+ $('#a_zeit').textContent=fmt(activeMin(),1)+' Min.';
+ var ok=kuerzelOK();$('#dl').disabled=!ok;
+ var msg=$('#a_msg');
+ if(!kuerzel())msg.textContent='Trage oben ein Kürzel ein, dann kannst du die Datei herunterladen. Lade die Datei danach in der Teams-Aufgabe hoch.';
+ else if(!ok)msg.textContent='Das Kürzel darf nur Buchstaben, Ziffern, Unterstrich oder Bindestrich enthalten (2–24 Zeichen).';
+ else if(!msg.getAttribute('data-done'))msg.textContent='Bereit zur Abgabe. Lade die Datei herunter und hänge sie in Teams an.';
+}
+
+/* ============ Export ============ */
+function fnv1a(str){
+ var bytes;try{bytes=new TextEncoder().encode(str);}catch(e){bytes=[];for(var i=0;i<str.length;i++)bytes.push(str.charCodeAt(i)&255);}
+ var h=0x811c9dc5;for(var j=0;j<bytes.length;j++){h^=bytes[j];h=(h+((h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)))>>>0;}
+ return ('00000000'+h.toString(16)).slice(-8);
+}
+function r1(x){return Math.round(x*10)/10;}
+function buildExport(){
+ var o={};
+ var datum=S.fields.h_datum||'';
+ o.format='arbeitsblatt-abgabe';o.version=1;
+ o.dokument={titel:DOC.titel,thema:DOC.thema,klasse:DOC.klasse,id:DOC.id};
+ o.kuerzel=kuerzel();o.kurs=String(S.fields.h_kurs||'').trim();o.datumEintrag=datum;o.exportiert=nowIso();
+ var je={};var tot=0;Object.keys(S.time).forEach(function(k){je[k]=r1(S.time[k]/60);tot+=S.time[k];});
+ o.zeit={ersterStart:S.first,sitzungen:S.sessions.map(function(s){return {start:s.start,ende:s.last,aktiveMinuten:r1(s.active/60)};}),aktiveMinutenGesamt:r1(tot/60),aktiveMinutenJeStation:je};
+ o.aufgaben=T.map(function(t){
+  var ev=t.check?evalTask(t):null;
+  var hil=[];var hh=S.help[t.id]||{};
+  if(t.info){var a=hh.info;hil.push({art:'Infomaterial',bezeichnung:'Infomaterial',geoeffnet:!!(a&&a.opens),anzahlOeffnungen:a?a.opens:0,erstmals:a?a.first:null,eigenerTextBeimOeffnenZeichen:a?a.len:null});}
+  (t.tips||[]).forEach(function(tp,i){var b=hh['tip'+i];hil.push({art:'Tipp',bezeichnung:'Tipp '+(i+1),geoeffnet:!!(b&&b.opens),anzahlOeffnungen:b?b.opens:0,erstmals:b?b.first:null,eigenerTextBeimOeffnenZeichen:b?b.len:null});});
+  var aus;
+  if(ev){aus={automatisch:true,richtig:ev.items.every(function(i){return i.eingabe!=='';})?ev.ok:null,details:ev.items.map(function(i){return {feld:i.label,eingabe:i.eingabe,sollwert:i.sol,toleranz:i.tol,richtig:i.eingabe===''?null:i.ok};})};}
+  else aus={automatisch:false};
+  return {id:t.id,station:t.s,operator:t.op,niveau:t.lvl,anforderungsbereich:t.afb,aufgabentext:strip(t.text),
+   antworten:t.keys.map(function(k){var v=S.fields[k.key];return {feld:k.key,beschriftung:k.label,wert:v==null?'':v};}),
+   hilfen:hil,pruefversuche:S.tries[t.id]||[],auswertung:aus};
+ });
+ o.selbstcheck=QUIZ.map(function(q){
+  var r=S.quiz[q.id]||{};function txt(v){var x=q.o.filter(function(z){return z.v===v;})[0];return x?x.t:null;}
+  return {id:q.id,frage:q.f,richtigeAntwort:txt(q.c),ersteAntwort:txt(r.first),ersteRichtig:r.first?r.first===q.c:null,letzteAntwort:txt(r.last),wechsel:r.changes?r.changes.length:0,wechselDetails:r.changes||[]};
+ });
+ o.selbsteinschaetzung=SELF.map(function(s){return {aussage:s.t,wert:S.self[s.id]||''};});
+ o.exitTicket={mitgenommen:S.fields.f_exit_1||'',offeneFrage:S.fields.f_exit_2||''};
+ o.modellnutzung={genutzt:S.model.uses>0,interaktionen:S.model.uses,erstmals:S.model.first,kombinationen:S.model.combos};
+ var lab={};T.forEach(function(t){t.keys.forEach(function(k){lab[k.key]='Aufgabe '+t.id+': '+k.label;});});lab.f_exit_1='Exit-Ticket 1';lab.f_exit_2='Exit-Ticket 2';
+ o.eingefuegteTexte=Object.keys(S.paste).filter(function(k){return k in lab;}).map(function(k){return {feld:k,beschriftung:lab[k],anzahl:S.paste[k].count,zeichen:S.paste[k].chars};});
+ o.anzahlExporte=S.exports+1;
+ o.legende=LEGENDE;
+ o.pruefsumme=fnv1a(JSON.stringify(o));
+ return o;
+}
+function download(){
+ if(!kuerzelOK())return;
+ var o=buildExport();
+ var d=new Date();var ds=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+ var name=DOC.thema+'_Jgst10_'+kuerzel()+'_'+ds+'.json';
+ try{
+  var blob=new Blob([JSON.stringify(o)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  S.exports++;saveNow();
+  var msg=$('#a_msg');msg.setAttribute('data-done','1');msg.textContent='Datei „'+name+'“ wurde erstellt. Prüfe in deinem Download-Ordner, ob sie da ist, und lade sie in der Teams-Aufgabe hoch.';
+ }catch(e){
+  $('#a_msg').textContent='Der Download wurde blockiert. Öffne die Datei direkt im Browser (nicht in der Teams-Vorschau) und versuche es erneut.';
+ }
+}
+
+/* ============ Löschen, Drucken ============ */
+function openDlg(){$('#ovl').classList.add('show');$('#ovlno').focus();}
+function closeDlg(){$('#ovl').classList.remove('show');$('#reset').focus();}
+function doReset(){noSave=true;sdel('state');try{Object.keys(localStorage).forEach(function(k){if(k.indexOf(NS)===0)localStorage.removeItem(k);});}catch(e){}mem={};location.reload();}
+function fitTextareas(){$$('textarea').forEach(function(t){t.style.height='auto';t.style.height=(t.scrollHeight+4)+'px';});}
+window.addEventListener('beforeprint',fitTextareas);
+window.addEventListener('afterprint',function(){$$('textarea').forEach(function(t){t.style.height='';});});
+
+/* ============ Start ============ */
+renderAll();
+restore();
+initModel();
+if(!storageOK)showBanner();
+startSession();
+updateBox();
+$('#dl').addEventListener('click',download);
+$('#reset').addEventListener('click',openDlg);
+$('#ovlno').addEventListener('click',closeDlg);
+$('#ovlyes').addEventListener('click',doReset);
+$('#ovl').addEventListener('keydown',function(e){if(e.key==='Escape')closeDlg();});
+$('#printbtn').addEventListener('click',function(){window.print();});
+setInterval(tick,1000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')saveNow();});
+window.addEventListener('pagehide',saveNow);
+saveNow();
+
+})();
+</script>
+</body>
+</html>
